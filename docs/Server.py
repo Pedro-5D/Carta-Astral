@@ -943,7 +943,6 @@ def es_horario_verano(ciudad, fecha):
     
     return False  # No es horario de verano
 
-
 def obtener_zona_horaria(ciudad, fecha):
     resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
     
