@@ -922,18 +922,31 @@ def calculate_positions(date_str, time_str, lat=None, lon=None):
         print(f"Error calculando posiciones: {str(e)}")
         raise
 
-def obtener_zona_horaria(ciudad):
-    # Filtra todas las coincidencias que contengan la ciudad dentro de la columna
+def obtener_zona_horaria(ciudad, fecha):
     resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
     
-    # Si hay múltiples coincidencias, elige la más reciente
     if not resultado.empty:
-        return resultado.iloc[-1][2]  # Ajusta el índice según la columna con la zona horaria
-    return "Ciudad no encontrada en la base de datos."
+        zona_horaria = resultado.iloc[-1][2]  # Ajusta el índice según la columna correcta
+        
+        # Convertir la fecha ingresada a un objeto datetime
+        try:
+            fecha_consulta = datetime.strptime(fecha, "%Y-%m-%d")
+        except ValueError:
+            return "Formato de fecha inválido. Usa YYYY-MM-DD."
+        
+        mes = fecha_consulta.month
+        
+        # Definir reglas según el hemisferio
+        if "Europe/" in resultado.iloc[-1][0] or "America/New_York" in resultado.iloc[-1][0]:  # Hemisferio Norte
+            if 3 <= mes <= 10:
+                zona_horaria = "CEST"  # Verano en Europa
+        elif "America/Santiago" in resultado.iloc[-1][0] or "Australia/Sydney" in resultado.iloc[-1][0]:  # Hemisferio Sur
+            if mes in [12, 1, 2, 3]:
+                zona_horaria = "CLST"  # Verano en Chile
+        
+        return zona_horaria
 
-@app.route('/')
-def serve_html():
-    return send_from_directory('.', 'index.html')
+    return "Ciudad no encontrada en la base de datos."
 
 @app.route('/open-file')
 def open_file():
