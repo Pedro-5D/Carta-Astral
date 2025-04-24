@@ -20,7 +20,7 @@ CORS(app)
 # 🔹 Cargar datos de ciudades y coordenadas
 def cargar_ciudades():
     datos = []
-    with open("docs/allCountries.jsonl", "r", encoding="utf-8") as archivo:
+    with open("./allCountries.jsonl", "r", encoding="utf-8") as archivo:
         for linea in archivo:
             datos.append(json.loads(linea))  
     return datos
