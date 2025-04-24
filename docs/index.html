@@ -1267,41 +1267,64 @@ function createArcPath(startAngle, endAngle) {
     return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
 }
 
-<script type="text/babel">
-        function App() {
-            const [city, setCity] = React.useState("");
-            const [results, setResults] = React.useState("");
-            const [error, setError] = React.useState("");
+import React, { useState, useEffect } from "react";
+import Papa from "papaparse";
 
-            const handleSearchCity = () => {
-                if (!city.trim()) {
-                    setError("Por favor, introduce una ciudad.");
-                    setResults("");
-                    return;
-                }
-                setError("");
-                setResults(`Buscando información para la ciudad: ${city}`);
-            };
+function App() {
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState(null);
 
-            return (
+    useEffect(() => {
+        fetch("/path/to/time_zone.csv") // Cambia a la ruta correcta del archivo
+            .then((response) => response.text())
+            .then((data) => {
+                Papa.parse(data, {
+                    header: true,
+                    complete: (results) => {
+                        setCities(results.data); // Guarda las ciudades
+                    },
+                });
+            });
+    }, []);
+
+    const handleCityChange = (event) => {
+        const city = cities.find(c => c.cityName === event.target.value);
+        setSelectedCity(city);
+    };
+
+    return (
+        <div>
+            <h1>Selecciona una Ciudad</h1>
+            <select onChange={handleCityChange}>
+                <option value="">Selecciona una ciudad...</option>
+                {cities.map((city, index) => (
+                    <option key={index} value={city.cityName}>
+                        {city.cityName}
+                    </option>
+                ))}
+            </select>
+            {selectedCity && (
                 <div>
-                    <h1>Búsqueda de Ciudad</h1>
-                    <input
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="Escribe tu ciudad..."
-                    />
-                    <button onClick={handleSearchCity}>Buscar ciudad</button>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
-                    {results && <p>{results}</p>}
+                    <p>Ciudad seleccionada: {selectedCity.cityName}</p>
+                    <p>Huso horario: {selectedCity.timeZone}</p>
                 </div>
-            );
-        }
+            )}
+        </div>
+    );
+}
 
-        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
-<script>
+export default App;
+
+import { DateTime } from "luxon";
+
+function calculateUTC(date, time, timeZone) {
+    const localDateTime = DateTime.fromFormat(`${date} ${time}`, "yyyy-MM-dd HH:mm", { zone: timeZone });
+    return localDateTime.toUTC().toISO(); // Devuelve el tiempo en formato UTC
+}
+
+const utcTime = calculateUTC("2025-04-24", "18:44", "Europe/Madrid");
+console.log(`Hora en UTC: ${utcTime}`);
+	
         // Renderizado del componente
         return (
             <div>
