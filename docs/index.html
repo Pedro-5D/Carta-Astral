@@ -1310,8 +1310,8 @@ function createArcPath(startAngle, endAngle) {
 }
 </script>
 <script type="text/babel">
-function app 
-   const App = () => {
+    // Definición del componente App correctamente
+    const App = () => {
         const [cityName, setCityName] = React.useState(""); // Correctamente inicializado
         const [results, setResults] = React.useState([]);
         const [error, setError] = React.useState(null);
@@ -1359,10 +1359,12 @@ function app
         );
     };
 
+    // Renderizar el componente App
     ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
-        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    </script>
+       
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
 <script>
     React.useEffect(() => {
         fetch('https://carta-astral.onrender.com/cities')
