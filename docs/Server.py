@@ -1097,14 +1097,13 @@ def calculate():
 @app.route("/zona_horaria", methods=["GET"])
 def zona_horaria():
     ciudad = request.args.get("ciudad")
-    if not ciudad:
-        return jsonify({"error": "Debes proporcionar una ciudad."}), 400
+    fecha = request.args.get("fecha")  # Obtener fecha de la consulta
+
+    if not ciudad or not fecha:
+        return jsonify({"error": "Debes proporcionar ciudad y fecha."}), 400
     
-    zona_horaria = obtener_zona_horaria(ciudad)
-    if zona_horaria:
-        return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
-    else:
-        return jsonify({"error": "Ciudad no encontrada en la base de datos."}), 404
+    zona_horaria = obtener_zona_horaria(ciudad, fecha)  # Ahora enviamos ambos parámetros
+    return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
