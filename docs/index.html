@@ -1276,7 +1276,7 @@ function App() {
     }, [planets, date]); // 🔹 Ahora está dentro del componente
 
     return (
-        <div>
+        <>
             <form id="city-form">
                 <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
                 <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -1284,7 +1284,7 @@ function App() {
                 <button type="submit">Buscar</button>
             </form>
             <p id="city-results"></p>
-        </div>
+        </>
     );
 }
 
