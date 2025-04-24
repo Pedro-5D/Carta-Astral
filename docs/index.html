@@ -1846,21 +1846,18 @@ document.getElementById("city-form").addEventListener("submit", async function(e
     }
 
     try {
-        // Consulta a tu servidor en Render, que ahora usa GeoNames
         const response = await fetch(`https://software-astrologico.onrender.com/buscar_ciudad?nombre=${cityName}`);
         const data = await response.json();
 
         let resultsContainer = document.getElementById("city-results");
-        resultsContainer.innerHTML = "";  // Limpia resultados previos
+        resultsContainer.innerHTML = "";
 
-        if (data.error) {
-            resultsContainer.innerHTML = `<p>Error: ${data.error}</p>`;
-        } else if (data.length === 0) {
+        if (data.length === 0) {
             resultsContainer.innerHTML = "<p>No se encontraron ciudades.</p>";
         } else {
             data.forEach(city => {
                 let cityElement = document.createElement("p");
-                cityElement.textContent = `${city.name}, ${city.country}`;
+                cityElement.textContent = `${city.name}, ${city.country} (Zona horaria: ${city.timezone})`;
                 resultsContainer.appendChild(cityElement);
             });
         }
