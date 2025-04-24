@@ -1279,8 +1279,8 @@ function App() {
         <>
             <form id="city-form">
                 <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                <input type="date" id="date" name="date" />
-                <input type="time" id="time" name="time" />
+                <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
                 <button type="submit">Buscar</button>
             </form>
             <p id="city-results"></p>
