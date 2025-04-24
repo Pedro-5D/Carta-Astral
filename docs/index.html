@@ -1838,7 +1838,7 @@ root.render(<App />);
 <script>
 document.getElementById("city-form").addEventListener("submit", async function(event) {
     event.preventDefault();
-    
+
     const cityName = document.getElementById("city").value;
     if (!cityName) {
         alert("Por favor, ingresa una ciudad.");
@@ -1846,20 +1846,21 @@ document.getElementById("city-form").addEventListener("submit", async function(e
     }
 
     try {
-        // Solicitud a GeoNames
-        const response = await fetch(`https://api.geonames.org/searchJSON?q=${cityName}&maxRows=10&username=Pedro728`);
+        // Consulta a tu servidor en Render, que ahora usa GeoNames
+        const response = await fetch(`https://software-astrologico.onrender.com/buscar_ciudad?nombre=${cityName}`);
         const data = await response.json();
-        
+
         let resultsContainer = document.getElementById("city-results");
         resultsContainer.innerHTML = "";  // Limpia resultados previos
 
-        if (data.geonames.length === 0) {
-            resultsContainer.innerHTML = "No se encontraron ciudades.";
+        if (data.error) {
+            resultsContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+        } else if (data.length === 0) {
+            resultsContainer.innerHTML = "<p>No se encontraron ciudades.</p>";
         } else {
-            // Mostrar resultados
-            data.geonames.forEach(city => {
+            data.forEach(city => {
                 let cityElement = document.createElement("p");
-                cityElement.textContent = `${city.name}, ${city.countryName}`;
+                cityElement.textContent = `${city.name}, ${city.country}`;
                 resultsContainer.appendChild(cityElement);
             });
         }
