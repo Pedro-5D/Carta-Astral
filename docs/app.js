@@ -1,3 +1,6 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
 function App() {
     const [city, setCity] = React.useState("");
     const [results, setResults] = React.useState("");
