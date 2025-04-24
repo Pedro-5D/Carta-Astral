@@ -255,7 +255,7 @@
 <body>
     <div id="root"></div>
     <script type="text/babel" src="app.js"></script>
-
+ <script>
 const DIMENSIONS = {
     centerX: 300,
     centerY: 300,
@@ -1308,64 +1308,7 @@ function createArcPath(startAngle, endAngle) {
     
     return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
 }
-</script>
-<script type="text/babel">
-    // Definición del componente App correctamente
-    const App = () => {
-        const [cityName, setCityName] = React.useState(""); // Correctamente inicializado
-        const [results, setResults] = React.useState([]);
-        const [error, setError] = React.useState(null);
 
-        const handleSearch = async () => {
-            try {
-                setError(null);
-                const response = await fetch(`/buscar_ciudad?nombre=${encodeURIComponent(cityName)}`);
-                if (!response.ok) {
-                    throw new Error("Error al buscar ciudades");
-                }
-                const data = await response.json();
-                setResults(data);
-            } catch (err) {
-                setError(err.message);
-            }
-	// El return debe estar en el nivel superior del componente
-        return (
-            <div>
-                <div className="form-container">
-                    <label htmlFor="city-input">Introduce el nombre de la ciudad:</label>
-                    <input
-                        id="city-input"
-                        type="text"
-                        value={cityName}
-                        onChange={(e) => setCityName(e.target.value)}
-                        placeholder="Ejemplo: Madrid"
-                    />
-                    <button onClick={handleSearch}>Buscar</button>
-                </div>
-                {error && <div className="error-message">{error}</div>}
-                <div className="results-container">
-                    {results.length > 0 ? (
-                        results.map((city, index) => (
-                            <div key={index} className="result-item">
-                                {city.name} - {city.country} (GMT Offset: {city.gmt_offset})
-                            </div>
-                        ))
-                    ) : (
-                        <div>No hay resultados</div>
-                    )}
-                </div>
-            </div>
-        );
-        };      
-    };
-
-    // Renderizar el componente App
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
-       
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
-<script>
     React.useEffect(() => {
         fetch('https://carta-astral.onrender.com/cities')
             .then(response => response.json())
