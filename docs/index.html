@@ -1362,7 +1362,7 @@ function createArcPath(startAngle, endAngle) {
     </script>
 <script>
     React.useEffect(() => {
-        fetch('https://software-astrologico.onrender.com/cities')
+        fetch('https://carta-astral.onrender.com/cities')
             .then(response => response.json())
             .then(data => {
                 setCities(data);
@@ -1379,7 +1379,7 @@ function createArcPath(startAngle, endAngle) {
 
     // Manejadores de eventos
     const handleCalculate = () => {
-        fetch('https://software-astrologico.onrender.com/calculate', {
+        fetch('https://carta-astral.onrender.com/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1443,7 +1443,7 @@ function createArcPath(startAngle, endAngle) {
         }
 
         // ✅ Si es un archivo local, enviarlo al servidor para procesarlo
-        window.location.href = `https://software-astrologico.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
+        window.location.href = `https://carta-astral.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
     }
 };
 
