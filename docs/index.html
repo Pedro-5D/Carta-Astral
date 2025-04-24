@@ -1277,10 +1277,10 @@ function App() {
 
     return (
         <>
-            <form id="city-form">
+           <form id="city-form">
                 <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+                <input type="date" id="date" name="date" />
+                <input type="time" id="time" name="time" />
                 <button type="submit">Buscar</button>
             </form>
             <p id="city-results"></p>
@@ -1795,17 +1795,23 @@ function App() {
     );
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const cityForm = document.getElementById("city-form");
-    if (cityForm) {
-        cityForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-            console.log("Formulario enviado correctamente.");
-        });
-    } else {
-        console.error("El formulario 'city-form' no existe en el DOM.");
-    }
+document.getElementById("city-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const cityName = document.getElementById("city").value.trim().toLowerCase();
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+
+    fetch('https://software-astrologico.onrender.com/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ city: cityName, date: date, time: time })
+    })
+    .then(response => response.json())
+    .then(data => console.log("Datos recibidos:", data))
+    .catch(error => console.error("Error:", error));
 });
+
 </script>
 </body>
 </html>
