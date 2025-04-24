@@ -1287,7 +1287,6 @@ import Papa from "papaparse";
 
                 setError("");
                 setResults(`Buscando información para la ciudad: ${city}`);
-            };
 
             return (
                 <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
@@ -1320,6 +1319,7 @@ import Papa from "papaparse";
                     {results && <p style={{ marginTop: "10px" }}>{results}</p>}
                 </div>
             );
+	    };
         }
 
         ReactDOM.createRoot(document.getElementById("root")).render(<App />);
