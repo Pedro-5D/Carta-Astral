@@ -17,4 +17,3 @@ pytz==2022.7.1
 fastapi
 uvicorn
 tzdata
-sqlite3
