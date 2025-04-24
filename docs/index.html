@@ -1394,8 +1394,28 @@ function createArcPath(startAngle, endAngle) {
         window.location.href = `https://carta-astral.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
     }
 };
+function App() {
+    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
+    const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
+    const [planets, setPlanets] = React.useState([]);
+    const [activeStars, setActiveStars] = React.useState([]);
 
-	// Renderizado
+    React.useEffect(() => {
+        if (planets.length > 0) {
+            setActiveStars(getActiveStars(planets, date));
+        }
+    }, [planets, date]);
+
+    return (
+        <form id="city-form">
+            <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+            <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            <button type="submit">Buscar</button>
+        </form>
+        <p id="city-results"></p>
+     );
+ 	// Renderizado
     return (
         <div>
             <div className="controls">
