@@ -1817,55 +1817,14 @@ function App() {
         </div>
     );
 }
-	    
-document.addEventListener("click", function(event) {
-    let link = event.target.closest(".star-link");
-    if (!link) return;
-
-    event.preventDefault();
-    const url = link.getAttribute("href");
-
-    console.log("Intentando abrir:", url); // Depuración en consola
-
-    // ✅ Abrir directamente la URL sin pasar por el servidor
-    window.open(url, "_blank");
-});
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const cityForm = document.getElementById("city-form");
     if (cityForm) {
-        cityForm.addEventListener("submit", async function(event) {
+        cityForm.addEventListener("submit", function(event) {
             event.preventDefault();
-
-            const cityName = document.getElementById("city").value.trim();
-            if (!cityName) {
-                alert("Por favor, ingresa una ciudad.");
-                return;
-            }
-
-            try {
-                const response = await fetch(`/buscar_ciudad?nombre=${cityName}`);
-                const data = await response.json();
-
-                let resultsContainer = document.getElementById("city-results");
-                resultsContainer.innerHTML = "";
-
-                if (data.length === 0) {
-                    resultsContainer.innerHTML = "<p>No se encontraron ciudades.</p>";
-                } else {
-                    data.forEach(city => {
-                        let cityElement = document.createElement("p");
-                        cityElement.textContent = `${city.name}, ${city.country} (Zona horaria: ${city.timezone})`;
-                        resultsContainer.appendChild(cityElement);
-                    });
-                }
-            } catch (error) {
-                console.error("Error al buscar ciudades:", error);
-            }
+            console.log("Formulario enviado correctamente.");
         });
     } else {
         console.error("El formulario 'city-form' no existe en el DOM.");
