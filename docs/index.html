@@ -211,14 +211,19 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel">
-
-    <!-- 🔹 Formulario fuera del script de Babel -->
-    <form id="city-form">
-        <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-        <button type="submit">Buscar</button>
-    </form>
-    <p id="city-results"></p>
+    
+<script type="text/babel">
+    // 🔹 Formulario fuera del script de Babel
+    const form = (
+        <div>
+            <form id="city-form">
+                <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+                <button type="submit">Buscar</button>
+            </form>
+            <p id="city-results"></p>
+        </div>
+    );
+</script>
 
 const DIMENSIONS = {
     centerX: 300,
