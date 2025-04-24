@@ -6,18 +6,19 @@ from math import sin, cos, tan, atan, atan2, radians, degrees
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
-from skyfield.api import load
-ts = load.timescale()
-from skyfield.api import load
-eph = load('de421.bsp')  # Carga las efemérides
-from pathlib import Path
-
-app = Flask(__name__)
-CORS(app)
-
 import sqlite3
 import csv
+from zoneinfo import ZoneInfo
 
+# Cargar efemérides
+ts = load.timescale()
+eph = load('docs/de421.bsp')  # Ruta correcta dentro de 'docs'
+
+# Inicializar Flask
+app = Flask(__name__)
+CORS(app)  # Habilitar CORS para permitir conexiones externas
+
+# 🔹 **Configurar la base de datos de ciudades y zonas horarias**
 conn = sqlite3.connect("timezone.db")
 cursor = conn.cursor()
 
@@ -31,15 +32,22 @@ CREATE TABLE IF NOT EXISTS cities (
 )
 """)
 
-with open("docs/timezone.csv", encoding="utf-8") as file:
-    reader = csv.reader(file)
-    next(reader)  # Saltar encabezado
-    for row in reader:
-        cursor.execute("INSERT OR IGNORE INTO cities VALUES (?, ?, ?, ?, ?)", row)
+# **Solo cargar el CSV si la tabla está vacía**
+cursor.execute("SELECT COUNT(*) FROM cities")
+num_rows = cursor.fetchone()[0]
 
-conn.commit()
+if num_rows == 0:
+    with open("docs/timezone.csv", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        next(reader)  # Saltar encabezado
+        for row in reader:
+            cursor.execute("INSERT OR IGNORE INTO cities VALUES (?, ?, ?, ?, ?)", row)
+
+    conn.commit()
+
 conn.close()
 
+# 🔹 **Función optimizada para buscar ciudades**
 def buscar_ciudad(nombre_ciudad):
     conn = sqlite3.connect("timezone.db")
     cursor = conn.cursor()
@@ -47,7 +55,7 @@ def buscar_ciudad(nombre_ciudad):
     cursor.execute("""
         SELECT zone_name, country_code, abbreviation, gmt_offset 
         FROM cities 
-        WHERE LOWER(zone_name) LIKE LOWER(?)
+        WHERE zone_name LIKE ?
     """, (f"%{nombre_ciudad}%",))
 
     resultado = cursor.fetchall()
@@ -55,6 +63,7 @@ def buscar_ciudad(nombre_ciudad):
 
     return [{"name": row[0], "country": row[1], "timezone": row[2], "gmt_offset": row[3]} for row in resultado]
 
+# 🔹 **Corrección en la conversión de fecha/hora a UTC**
 def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
     """Convierte fecha y hora local a UTC con ajuste de horario de verano/invierno (DST)."""
 
@@ -62,11 +71,11 @@ def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         time_obj = datetime.strptime(time_str, "%H:%M").time()
 
-        # Verificar si la zona horaria es válida antes de aplicarla
+        # **Verificar si la zona horaria es válida antes de aplicarla**
         try:
             dt_local = datetime.combine(date_obj, time_obj).replace(tzinfo=ZoneInfo(timezone_str))
         except Exception:
-            return {"error": f"Zona horaria no válida: {timezone_str}"}
+            return {"error": f"Zona horaria no válida: {timezone_str}. Verifica el nombre de la zona."}
 
         dt_utc = dt_local.astimezone(ZoneInfo("UTC"))
         en_dst = dt_utc.dst() != timedelta(0)
@@ -75,6 +84,24 @@ def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
 
     except ValueError:
         return {"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'."}
+
+# 🔹 **Ruta para obtener ciudades desde la base de datos**
+@app.route("/buscar_ciudad", methods=["GET"])
+def obtener_ciudades():
+    nombre_ciudad = request.args.get("nombre", "")
+    if not nombre_ciudad:
+        return jsonify({"error": "Debe proporcionar un nombre de ciudad"}), 400
+    
+    ciudades = buscar_ciudad(nombre_ciudad)
+    return jsonify(ciudades)
+
+# 🔹 **Ejecutar servidor en Render**
+if __name__ == "__main__":
+    print("\nIniciando servidor de carta astral con interpretaciones completas...")
+    print("Cargando efemérides, configuración e interpretaciones...")
+    
+    print("\nServidor iniciando en https://software-astrologico.onrender.com")
+    app.run(host="0.0.0.0", port=10000, debug=True)
 
 def init_interpreter():
     global interpreter
