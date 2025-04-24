@@ -1819,7 +1819,7 @@ function App() {
 }
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+React.useEffect(() => {
     const cityForm = document.getElementById("city-form");
     if (cityForm) {
         cityForm.addEventListener("submit", function(event) {
@@ -1829,7 +1829,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         console.error("El formulario 'city-form' no existe en el DOM.");
     }
-});
+}, []);
 </script>
 </body>
 </html>
