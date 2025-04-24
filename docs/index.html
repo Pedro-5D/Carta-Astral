@@ -212,18 +212,16 @@
 <body>
     <div id="root"></div>
     
-<script type="text/babel">
     // 🔹 Formulario fuera del script de Babel
-    const form = (
-        <div>
-            <form id="city-form">
-                <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                <button type="submit">Buscar</button>
-            </form>
-            <p id="city-results"></p>
-        </div>
-    );
-</script>
+const form = (
+    <div>
+        <form id="city-form">
+            <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+            <button type="submit">Buscar</button>
+        </form>
+        <p id="city-results"></p>
+    </div>
+);
 
 const DIMENSIONS = {
     centerX: 300,
