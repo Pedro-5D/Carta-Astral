@@ -20,11 +20,22 @@ import requests
 
 app = Flask(__name__)
 
+import requests
+
 def buscar_ciudades(nombre_ciudad):
     url = f"https://api.geonames.org/searchJSON?q={nombre_ciudad}&maxRows=10&username=Pedro728"
     respuesta = requests.get(url)
     datos = respuesta.json()
-    return [{"name": ciudad["name"], "country": ciudad["countryName"]} for ciudad in datos.get("geonames", [])]
+
+    ciudades = []
+    for ciudad in datos.get("geonames", []):
+        ciudades.append({
+            "name": ciudad["name"],
+            "country": ciudad["countryName"],
+            "timezone": ciudad.get("timezone", "No disponible")  # Agrega la zona horaria
+        })
+    
+    return ciudades
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
