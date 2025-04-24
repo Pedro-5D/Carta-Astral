@@ -6,6 +6,8 @@ from math import sin, cos, tan, atan, atan2, radians, degrees
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
+import pandas as pd
+from flask import Flask, request, jsonify
 from skyfield.api import load
 ts = load.timescale()
 from skyfield.api import load
@@ -14,6 +16,8 @@ from pathlib import Path
 
 app = Flask(__name__)
 CORS(app)
+# Cargar el archivo de zonas horarias
+df = pd.read_csv("time_zone.csv")
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -918,6 +922,12 @@ def calculate_positions(date_str, time_str, lat=None, lon=None):
         print(f"Error calculando posiciones: {str(e)}")
         raise
 
+def obtener_zona_horaria(ciudad):
+    resultado = df[df["Ciudad"].str.lower() == ciudad.lower()]
+    if not resultado.empty:
+        return resultado.iloc[0]["Zona_Horaria"]
+    return None  # Si la ciudad no está en la base de datos
+
 @app.route('/')
 def serve_html():
     return send_from_directory('.', 'index.html')
@@ -1067,6 +1077,20 @@ def calculate():
         print(f"Error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+# Ruta para obtener la zona horaria
+@app.route("/zona_horaria", methods=["GET"])
+def zona_horaria():
+    ciudad = request.args.get("ciudad")
+    if not ciudad:
+        return jsonify({"error": "Debes proporcionar una ciudad."}), 400
+    
+    zona_horaria = obtener_zona_horaria(ciudad)
+    if zona_horaria:
+        return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
+    else:
+        return jsonify({"error": "Ciudad no encontrada en la base de datos."}), 404
+
+# Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
     print("Cargando efemérides, configuración e interpretaciones...")
