@@ -43,10 +43,11 @@ CREATE TABLE IF NOT EXISTS cities (
 timezone_path = Path("./time_zone.csv")  # 🔹 Usa './' para asegurar que Render lo encuentre
 
 if timezone_path.exists():
-    with open(str(timezone_path), encoding="utf-8") as file:
+    with open("./time_zone.csv", encoding="utf-8") as file:
         reader = csv.reader(file)
         next(reader)  # Saltar encabezado
         for row in reader:
+            row = row[:5]  # 🔹 Tomar solo los primeros 5 valores
             cursor.execute("INSERT OR IGNORE INTO cities VALUES (?, ?, ?, ?, ?)", row)
 
     conn.commit()
