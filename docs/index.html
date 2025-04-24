@@ -1270,6 +1270,8 @@ function App() {
     const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
     const [planets, setPlanets] = React.useState([]);
     const [activeStars, setActiveStars] = React.useState([]);
+    const [city, setCity] = React.useState("");
+    const [results, setResults] = React.useState("");
 
     React.useEffect(() => {
         if (planets.length > 0) {
@@ -1277,18 +1279,47 @@ function App() {
         }
     }, [planets, date]);
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Lógica para buscar los datos de la ciudad
+        if (city.trim() === "") {
+            setResults("Por favor, escribe una ciudad.");
+            return;
+        }
+        setResults(`Buscando información para la ciudad: ${city}, fecha: ${date}, hora: ${time}`);
+        // Aquí puedes agregar la llamada a una API o lógica adicional
+    };
+
     return (
         <>
-            <form id="city-form">
-                <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            <form id="city-form" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder="Escribe tu ciudad..."
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                />
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                />
+                <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                />
                 <button type="submit">Buscar</button>
             </form>
-            <p id="city-results"></p>
+            <p id="city-results">{results}</p>
         </>
     );
-
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
