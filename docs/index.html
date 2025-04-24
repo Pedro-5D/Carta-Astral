@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carta Astral</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .wheel-container { 
+            width: 800px; 
+            height: 800px; 
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls { 
+            margin-bottom: 20px; 
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls input, .controls select { 
+            margin-right: 10px; 
+            padding: 8px; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .controls button { 
+            padding: 8px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background: #0056b3;
+        }
+        .planet-label { 
+            font-size: 20px;
+            font-family: Arial Unicode MS, sans-serif;
+            font-weight: bold;
+            transition: font-size 0.2s;
+        }
+        .planet-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .aspect-line {
+            cursor: pointer;
+            transition: stroke-width 0.2s;
+        }
+        .aspect-list-item {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 4px 0;
+            transition: all 0.2s;
+        }
+        .aspect-list-item:hover {
+            background-color: #f0f0f0;
+        }
+        .planet-list-item {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 4px 0;
+            transition: all 0.2s;
+        }
+        .planet-list-item:hover {
+            background-color: #f0f0f0;
+        }
+        .aspects-list {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .star-symbol {
+            color: #FFD700;
+            text-shadow: 0 0 2px #000;
+        }
+        .fixed-stars-list {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .star-label { 
+            font-family: Arial Unicode MS, sans-serif;
+            transition: font-size 0.2s;
+        }
+        .dignity-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dignity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .dignity-table th,
+        .dignity-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .dignity-table th {
+            background-color: #f5f5f5;
+        }
+        .dignity-table tfoot td {
+            font-weight: bold;
+        }
+        .triplicity-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .triplicity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: "Arial Unicode MS", sans-serif;
+        }
+        .triplicity-table th,
+        .triplicity-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .triplicity-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .triplicity-table td:first-child {
+            font-weight: bold;
+        }
+        .triplicity-table td:nth-child(3) {
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        /* Nuevos estilos para interpretaciones */
+        .interpretations-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .interpretation-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .interpretation-section h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .interpretation-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .interpretation-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .interpretation-content {
+            color: #34495e;
+            line-height: 1.6;
+        }
+        .physical-plane, 
+        .astral-plane {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #e9ecef;
+        }
+        .plane-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+const DIMENSIONS = {
+    centerX: 300,
+    centerY: 300,
+    radius: 250,
+    innerRadius: 110,
+    glyphRadius: 235
+};
+
+const SIGNS = [
+    {name: 'ARIES', start: 354, length: 36, symbol: '♈', color: '#FFE5E5'},
+    {name: 'TAURUS', start: 30, length: 30, symbol: '♉', color: '#E5FFE5'},
+    {name: 'GEMINI', start: 60, length: 30, symbol: '♊', color: '#FFFFE5'},
+    {name: 'CANCER', start: 90, length: 30, symbol: '♋', color: '#E5FFFF'},
+    {name: 'LEO', start: 120, length: 30, symbol: '♌', color: '#FFE5E5'},
+    {name: 'VIRGO', start: 150, length: 36, symbol: '♍', color: '#E5FFE5'},
+    {name: 'LIBRA', start: 186, length: 24, symbol: '♎', color: '#FFFFE5'},
+    {name: 'SCORPIO', start: 210, length: 30, symbol: '♏', color: '#E5FFFF'},
+    {name: 'OPHIUCHUS', start: 240, length: 12, symbol: '⛎', color: '#FFFFE5'},
+    {name: 'SAGITTARIUS', start: 252, length: 18, symbol: '♐', color: '#FFE5E5'},
+    {name: 'CAPRICORN', start: 270, length: 36, symbol: '♑', color: '#E5FFE5'},
+    {name: 'AQUARIUS', start: 306, length: 18, symbol: '♒', color: '#FFFFE5'},
+    {name: 'PEGASUS', start: 324, length: 6, symbol: '∩', color: '#E5FFFF'},
+    {name: 'PISCES', start: 330, length: 24, symbol: '♓', color: '#E5FFFF'}
+];
+
+const PLANET_SYMBOLS = {
+    'SOL': '☉',
+    'LUNA': '☽',
+    'MERCURIO': '☿',
+    'VENUS': '♀',
+    'MARTE': '♂',
+    'JÚPITER': '♃',
+    'SATURNO': '♄',
+    'URANO': '♅',
+    'NEPTUNO': '♆',
+    'PLUTÓN': '♇',
+    'ASC': 'ASC',
+    'MC': 'MC',
+    'DSC': 'DSC',
+    'IC': 'IC'
+};
+
+const ASPECTS = {
+    CONJUNCTION: { angle: 0, orb: 2, color: '#000080', name: 'Armónico Relevante' },
+    SEIS: { angle: 6, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    DOCE: { angle: 12, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    DIECIOCHO: { angle: 18, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    VEINTICUATRO: { angle: 24, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    TREINTA: { angle: 30, orb: 2, color: '#FF0000', name: 'Inarmónico Relevante' },
+    TREINTAYSEIS: { angle: 36, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CUARENTAYDOS: { angle: 42, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    CUARENTAYOCHO: { angle: 48, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CICUENTAYCUATRO: { angle: 54, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    SEXTILE: { angle: 60, orb: 2, color: '#000080', name: 'Armónico Relevante' },
+    SESENTAYSEIS: { angle: 66, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    QUINTILE: { angle: 72, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    SETENTAYOCHO: { angle: 78, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    OCHENTAYCUATRO: { angle: 84, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    SQUARE: { angle: 90, orb: 2, color: '#FF0000', name: 'Inarmónico Relevante' },
+    NOVENTAYSEIS: { angle: 96, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CIENTODOS: { angle: 102, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    CIENTOOCHO: { angle: 108, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CIENTOCATORCE: { angle: 114, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    TRINE: { angle: 120, orb: 2, color: '#000080', name: 'Armónico Relevante' },
+    CIENTOVEINTISEIS: { angle: 126, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    CIENTOTREINTAYDOS: { angle: 132, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CIENTOTREINTAYOCHO: { angle: 138, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    CIENTOCUARENTAYCUATRO: { angle: 144, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    QUINCUNX: { angle: 150, orb: 2, color: '#FF0000', name: 'Inarmónico Relevante' },
+    CIENTOCINCUENTAYSEIS: { angle: 156, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CIENTOSESENTAYDOS: { angle: 162, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    CIENTOSESENTAYOCHO: { angle: 168, orb: 2, color: '#ADD8E6', name: 'Armónico' },
+    CIENTOSETENTAYCUATRO: { angle: 174, orb: 2, color: '#ffff00', name: 'Inarmónico' },
+    OPPOSITION: { angle: 180, orb: 2, color: '#000080', name: 'Armónico Relevante' }
+};
+
+const COLORS = {
+    RED: '#FF0000',
+    GREEN: '#00FF00',
+    BLUE: '#0000FF',
+    YELLOW: '#FFFF00'
+};
+
+	const FIXED_STARS = [
+            {
+                name: "Aldebaran",
+                longitude_J2000: 69.00,
+                effect: "Honor, inteligencia y riqueza",
+                filePath: "https://www.izarren.top/aldebaran",
+                magnitude: 12
+            },
+            {
+                name: "Antares",
+                longitude_J2000: 249.18,
+                effect: "Impulsividad y éxito arriesgado",
+                filePath: "https://www.izarren.top/antares",
+                magnitude: 12
+            },
+            {
+                name: "Regulus",
+                longitude_J2000: 148.51,
+                effect: "Poder, éxito y honores",
+                filePath: "https://www.izarren.top/regulus",
+                magnitude: 12
+            },
+            {
+                name: "Spica",
+                longitude_J2000: 203.52,
+                effect: "Beneficios a través del arte y ciencia",
+                filePath: "https://www.izarren.top/spica",
+                magnitude: 12
+            },
+            {
+                name: "Sirius",
+                longitude_J2000: 102.30,
+                effect: "Honor, renombre y riqueza",
+                filePath: "https://www.izarren.top/sirio",
+                magnitude: 12
+            },
+            {
+                name: "Algol",
+                longitude_J2000: 56.3,
+                effect: "Desafíos y transformación",
+                filePath: "https://www.izarren.top/algol",
+                magnitude: 12
+            },
+            {
+                name: "Capella",
+                longitude_J2000: 81.40,
+                effect: "Honor y riqueza",
+                filePath: "https://www.izarren.top/capella",
+                magnitude: 12
+            },
+            {
+                name: "Vega",
+                longitude_J2000: 284.03,
+                effect: "Beneficios artísticos y creatividad",
+                filePath: "https://www.izarren.top/vega",
+                magnitude: 12
+            },
+            {
+                name: "Pollux",
+                longitude_J2000: 113.31,
+                effect: "Éxito atlético y marcial",
+                filePath: "https://www.izarren.top/pollux",
+                magnitude: 12
+            },
+            {
+                name: "Fomalhaut",
+                longitude_J2000: 333.0,
+                effect: "Éxito espiritual y místico",
+                filePath: "https://www.izarren.top/fomalhaut",
+                magnitude: 6
+            },
+            {
+                name: "Proción",
+                longitude_J2000: 114.19,
+                effect: "Éxito y honores a través del esfuerzo",
+                filePath: "https://www.izarren.top/procyon",
+                magnitude: 12
+            },
+            {
+                name: "Mira Ceti",
+                longitude_J2000: 31.03,
+                effect: "Misterio y transformación espiritual",
+                filePath: "https://www.izarren.top/mira-de-ceti",
+                magnitude: 6
+            },
+            {
+                name: "Zaurak",
+                longitude_J2000: 53.22,
+                effect: "Sabiduría y paciencia",
+                filePath: "https://www.izarren.top/zaurak",
+                magnitude: 6
+            },
+            {
+                name: "Alkakurops",
+                longitude_J2000: 212.43,
+                effect: "Protección y habilidad estratégica",
+                filePath: "https://www.izarren.top/alkalurops",
+                magnitude: 6
+            },
+            {
+                name: "Markab",
+                longitude_J2000: 353.7,
+                effect: "Viajes y aventuras exitosas",
+                filePath: "https://www.izarren.top/markab",
+                magnitude: 6
+            },
+            {
+                name: "Princeps",
+                longitude_J2000: 212.41,
+                effect: "Liderazgo y nobleza",
+                filePath: "https://www.izarren.top/princeps",
+                magnitude: 6
+            },
+            {
+                name: "Agena",
+                longitude_J2000: 234.2,
+                effect: "Honor y reconocimiento público",
+                filePath: "https://www.izarren.top/agena",
+                magnitude: 6
+            },
+            {
+                name: "Alcione",
+                longitude_J2000: 59.31,
+                effect: "Visión espiritual y experiencias místicas",
+                filePath: "https://www.izarren.top/alcyone",
+                magnitude: 12
+            },
+            {
+                name: "Alkaid",
+                longitude_J2000: 177.1,
+                effect: "Honores militares y liderazgo",
+                filePath: "https://www.izarren.top/alkaid",
+                magnitude: 12
+            },
+            {
+                name: "Gienah",
+                longitude_J2000: 174.5,
+                effect: "Capacidad oratoria y percepción aguda",
+                filePath: "https://www.izarren.top/gienah",
+                magnitude: 12
+            },
+            {
+                name: "Arcturus",
+                longitude_J2000: 204.15,
+                effect: "Éxito a través de la autodeterminación",
+                filePath: "https://www.izarren.top/arcturus",
+                magnitude: 12
+            },
+            {
+                name: "Alphecca",
+                longitude_J2000: 221.52,
+                effect: "Dones artísticos y diplomacia",
+                filePath: "https://www.izarren.top/alphecca",
+                magnitude: 12
+            },
+            {
+                name: "Deneb Algedi",
+                longitude_J2000: 303.5,
+                effect: "Posición de autoridad y justicia",
+                filePath: "https://www.izarren.top/deneb-algedi",
+                magnitude: 12
+            },
+            {
+                name: "Acamar",
+                longitude_J2000: 22.47,
+                effect: "Éxito en cargos públicos",
+                filePath: "https://www.izarren.top/acamar",
+                magnitude: 6
+            },
+            {
+                name: "Avior",
+                longitude_J2000: 172.41,
+                effect: "Mensajero divino",
+                filePath: "https://www.izarren.top/avior",
+                magnitude: 6
+            },
+            {
+                name: "Deneb Kaitos",
+                longitude_J2000: 2.06,
+                effect: "Provoca cambio obligatorio",
+                filePath: "https://www.izarren.top/deneb-kaitos",
+                magnitude: 6
+            },
+            {
+                name: "Altair",
+                longitude_J2000: 301.18,
+                effect: "Culpa de derramamiento de sangre",
+                filePath: "https://www.izarren.top/altair",
+                magnitude: 6
+            },
+            {
+                name: "Thuban",
+                longitude_J2000: 156.36,
+                effect: "El Sutil",
+                filePath: "https://www.izarren.top/thuban",
+                magnitude: 6
+            },
+            {
+                name: "Skat",
+                longitude_J2000: 338.24,
+                effect: "Provoca cambio obligatorio",
+                filePath: "https://www.izarren.top/skat",
+                magnitude: 6
+            },
+            {
+                name: "Biham",
+                longitude_J2000: 336.21,
+                effect: "Los camellos sedientos",
+                filePath: "https://www.izarren.top/biham",
+                magnitude: 6
+            },
+            {
+                name: "Dubhe",
+                longitude_J2000: 134.44,
+                effect: "Calisto",
+                filePath: "https://www.izarren.top/dubhe",
+                magnitude: 6
+            },
+            {
+                name: "Cursa",
+                longitude_J2000: 74.48,
+                effect: "El pozo dorado",
+                filePath: "https://www.izarren.top/cursa",
+                magnitude: 6
+            },
+            {
+                name: "Betelgeuse",
+                longitude_J2000: 88.17,
+                effect: "Elevación social",
+                filePath: "https://www.izarren.top/betelgeuse",
+                magnitude: 6
+            },
+            {
+                name: "Bellatrix",
+                longitude_J2000: 89.29,
+                effect: "Estrella amazona",
+                filePath: "https://www.izarren.top/bellatrix",
+                magnitude: 6
+            },
+            {
+                name: "Acubens",
+                longitude_J2000: 133.11,
+                effect: "El refugio del escondite",
+                filePath: "https://www.izarren.top/acubens",
+                magnitude: 6
+            },
+            {
+                name: "Adhafera",
+                longitude_J2000: 147.06,
+                effect: "La pira funeraria",
+                filePath: "https://www.izarren.top/adhafera",
+                magnitude: 6
+            },
+            {
+                name: "Acrab",
+                longitude_J2000: 242.43,
+                effect: "Malevolencia extrema",
+                filePath: "https://www.izarren.top/acrab",
+                magnitude: 6
+            },
+            {
+                name: "Al Haud",
+                longitude_J2000: 126.48,
+                effect: "Persecución de la sabiduría",
+                filePath: "https://www.izarren.top/al-haud",
+                magnitude: 6
+            },
+            {
+                name: "Al Hecka",
+                longitude_J2000: 84.19,
+                effect: "El cuerno sur del toro",
+                filePath: "https://www.izarren.top/al-hecka",
+                magnitude: 6
+            },
+            {
+                name: "Anser",
+                longitude_J2000: 299.22,
+                effect: "Profetiza",
+                filePath: "https://www.izarren.top/anser",
+                magnitude: 6
+            },
+            {
+                name: "Ascella",
+                longitude_J2000: 283.10,
+                effect: "Da buena fortuna y felicidad",
+                filePath: "https://www.izarren.top/ascella",
+                magnitude: 6
+            },
+            {
+                name: "Dabih",
+                longitude_J2000: 303.34,
+                effect: "Propagación del conocimiento",
+                filePath: "https://www.izarren.top/dabih",
+                magnitude: 6
+            },
+            {
+                name: "El kophrah",
+                longitude_J2000: 153.12,
+                effect: "El salto de la gacela",
+                filePath: "https://www.izarren.top/el-kophrah",
+                magnitude: 6
+            },
+            {
+                name: "Kochab",
+                longitude_J2000: 132.51,
+                effect: "El emperador",
+                filePath: "https://www.izarren.top/kochab",
+                magnitude: 6
+            },
+            {
+                name: "Kraz",
+                longitude_J2000: 196.54,
+                effect: "El emperador",
+                filePath: "https://www.izarren.top/kraz",
+                magnitude: 6
+            },
+            {
+                name: "Menkar",
+                longitude_J2000: 44.37,
+                effect: "Elevación social",
+                filePath: "https://www.izarren.top/menkar",
+                magnitude: 6
+            },
+            {
+                name: "Mirach",
+                longitude_J2000: 29.56,
+                effect: "El lado de la mujer encadenada",
+                filePath: "https://www.izarren.top/mirach",
+                magnitude: 6
+            },
+            {
+                name: "Miram",
+                longitude_J2000: 58.14,
+                effect: "Veneno mortal",
+                filePath: "https://www.izarren.top/miram",
+                magnitude: 6
+            },
+            {
+                name: "Misam",
+                longitude_J2000: 57.13,
+                effect: "Cura y resucita",
+                filePath: "https://www.izarren.top/misam",
+                magnitude: 6
+            },
+            {
+                name: "Muscida",
+                longitude_J2000: 113.18,
+                effect: "Don de lenguas",
+                filePath: "https://www.izarren.top/muscida",
+                magnitude: 6
+            },
+            {
+                name: "Scheat",
+                longitude_J2000: 358.54,
+                effect: "Peligro por ahogamiento o sofocación",
+                filePath: "https://www.izarren.top/scheat",
+                magnitude: 6
+            },
+            {
+                name: "Schedar",
+                longitude_J2000: 37.19,
+                effect: "El collar de Armonía",
+                filePath: "https://www.izarren.top/schedar",
+                magnitude: 6
+            },
+            {
+                name: "Seginus",
+                longitude_J2000: 197.12,
+                effect: "Facilidad para astrología, leyes",
+                filePath: "https://www.izarren.top/seginus",
+                magnitude: 6
+            },
+            {
+                name: "Vindemiatrix",
+                longitude_J2000: 189.29,
+                effect: "Hierba alucinogena",
+                filePath: "https://www.izarren.top/vindemiatrix",
+                magnitude: 6
+            },
+            {
+                name: "Zavijava",
+                longitude_J2000: 176.42,
+                effect: "Buen vendedor, ejecutivo, gerente o comandante subordinado",
+                filePath: "https://www.izarren.top/zavijava",
+                magnitude: 6
+            },
+            {
+                name: "Zibal",
+                longitude_J2000: 43.21,
+                effect: "Nido de avestruz",
+                filePath: "https://www.izarren.top/zibal",
+                magnitude: 6
+            },
+            {
+                name: "Zosma",
+                longitude_J2000: 160.51,
+                effect: "Gran inteligencia",
+                filePath: "https://www.izarren.top/zosma",
+                magnitude: 6
+            },
+            {
+                name: "Tolimán",
+                longitude_J2000: 239.04,
+                effect: "Posición de honor y poder",
+                filePath: "https://www.izarren.top/rigel-centauro",
+                magnitude: 6
+            },
+            {
+                name: "Tarazed",
+                longitude_J2000: 300.28,
+                effect: "Fortaleza y resistencia",
+                filePath: "https://www.izarren.top/tarazed",
+                magnitude: 6
+            },
+            {
+                name: "Alterf",
+                longitude_J2000: 137.25,
+                effect: "La mirada",
+                filePath: "https://www.izarren.top/alterf",
+                magnitude: 6
+            },
+            {
+                name: "Deneb Adige",
+                longitude_J2000: 334.51,
+                effect: "Habilidades artísticas y misticismo",
+                filePath: "https://www.izarren.top/deneb-adige",
+                magnitude: 6
+            },
+			{
+				name: "Psi Osa Mayor",
+				longitude_J2000: 167.21,
+				effect: "Inspiración y guía espiritual",
+				filePath: "https://www.izarren.top/psi-osa-mayor",
+				magnitude: 6
+			},
+			{
+				name: "Etamin",
+				longitude_J2000: 271.45,
+				effect: "Sabiduría y protección",
+				filePath: "https://www.izarren.top/etamin",
+				magnitude: 6
+			},
+			{
+				name: "Alderamin",
+				longitude_J2000: 308.37,
+				effect: "Liderazgo y autoridad",
+				filePath: "https://www.izarren.top/alderamin",
+				magnitude: 6
+			},
+			{
+				name: "Alpheratz",
+				longitude_J2000: 14.11,
+				effect: "Independencia y libertad",
+				filePath: "https://www.izarren.top/alpheratz",
+				magnitude: 6
+			},
+			{
+				name: "Algenib",
+				longitude_J2000: 9.45,
+				effect: "Ambición y determinación",
+				filePath: "https://www.izarren.top/algenib",
+				magnitude: 6
+			},
+			{
+				name: "Hamal",
+				longitude_J2000: 33.10,
+				effect: "Independencia y liderazgo",
+				filePath: "https://www.izarren.top/hamal",
+				magnitude: 6
+			},
+			{
+				name: "Mintaka",
+				longitude_J2000: 84.05,
+				effect: "Éxito y protección",
+				filePath: "https://www.izarren.top/mintaka",
+				magnitude: 6
+			},
+			{
+				name: "Alnilam",
+				longitude_J2000: 85.11,
+				effect: "Fortuna súbita",
+				filePath: "https://www.izarren.top/alnilam",
+				magnitude: 6
+			},
+			{
+				name: "Alnitak",
+				longitude_J2000: 86.18,
+				effect: "Protección y honor",
+				filePath: "https://www.izarren.top/alnitak",
+				magnitude: 6
+			},
+			{
+				name: "Castor",
+				longitude_J2000: 113.17,
+				effect: "Inteligencia y escritura",
+				filePath: "https://www.izarren.top/castor",
+				magnitude: 6
+			},
+			{
+				name: "Merak",
+				longitude_J2000: 153.11,
+				effect: "Peligro de violencia",
+				filePath: "https://www.izarren.top/merak",
+				magnitude: 6
+			},
+			{
+				name: "Alioth",
+				longitude_J2000: 166.44,
+				effect: "Persistencia y tenacidad",
+				filePath: "https://www.izarren.top/alioth",
+				magnitude: 6
+			},
+			{
+				name: "Phecda",
+				longitude_J2000: 157.32,
+				effect: "Guardián y protector",
+				filePath: "https://www.izarren.top/phecda",
+				magnitude: 6
+			},
+			{
+				name: "Alkes",
+				longitude_J2000: 127.25,
+				effect: "Sabiduría espiritual",
+				filePath: "https://www.izarren.top/alkes",
+				magnitude: 6
+			},	
+			{
+				name: "Diadem",
+				longitude_J2000: 203.17,
+				effect: "Dignidad y honor",
+				filePath: "https://www.izarren.top/diadem",
+				magnitude: 6
+			},
+			{
+				name: "Menkent",
+				longitude_J2000: 231.11,
+				effect: "Logros intelectuales",
+				filePath: "https://www.izarren.top/menkent",
+				magnitude: 6
+			},
+			{
+				name: "Suhail",
+				longitude_J2000: 223.22,
+				effect: "Viajes y expansión",
+				filePath: "https://www.izarren.top/suhail",
+				magnitude: 6
+			},
+			{
+				name: "Miaplacidus",
+				longitude_J2000: 221.39,
+				effect: "Éxito en navegación",
+				filePath: "https://www.izarren.top/miaplacidus",
+				magnitude: 6
+			},
+			{
+				name: "Al Risha",
+				longitude_J2000: 28.38,
+				effect: "Unión espiritual",
+				filePath: "https://www.izarren.top/al-risha",
+				magnitude: 6
+			},
+			{
+				name: "Alcor",
+				longitude_J2000: 169.21,
+				effect: "Pruebas de lealtad",
+				filePath: "https://www.izarren.top/alcor",
+				magnitude: 6
+			},
+			{
+				name: "Zuben Elgenubi",
+				longitude_J2000: 224.43,
+				effect: "Beneficios por servicio",
+				filePath: "https://www.izarren.top/zuben-elgenubi",
+				magnitude: 6
+			},
+			{
+				name: "Zuben Elschemali",
+				longitude_J2000: 235.27,
+				effect: "Beneficios por justicia",
+				filePath: "https://www.izarren.top/zubenelschemali",
+				magnitude: 6
+			},
+			{
+				name: "Acumen",
+				longitude_J2000: 248.49,
+				effect: "Ataques y defensas",
+				filePath: "https://www.izarren.top/acumen",
+				magnitude: 6
+			},
+			{
+				name: "Aculeus",
+				longitude_J2000: 247.11,
+				effect: "Ataque y defensa",
+				filePath: "https://www.izarren.top/aculeus",
+				magnitude: 6
+			},
+			{
+				name: "Algorab",
+				longitude_J2000: 176.51,
+				effect: "Destructivo y maligno",
+				filePath: "https://www.izarren.top/algorab",
+				magnitude: 6
+			},
+			{
+				name: "Menkalinan",
+				longitude_J2000: 89.41,
+				effect: "Buena fortuna",
+				filePath: "https://www.izarren.top/menkalinan",
+				magnitude: 6
+			},
+			{
+				name: "Alfard",
+				longitude_J2000: 131.44,
+				effect: "Cualidades de liderazgo",
+				filePath: "https://www.izarren.top/alfard",
+				magnitude: 6
+			},
+			{
+				name: "Algieba",
+				longitude_J2000: 149.49,
+				effect: "Riqueza y generosidad",
+				filePath: "https://www.izarren.top/algieba",
+				magnitude: 6
+			},
+			{
+				name: "Meissa",
+				longitude_J2000: 83.21,
+				effect: "Protección divina",
+				filePath: "https://www.izarren.top/meissa",
+				magnitude: 6
+			},
+			{
+				name: "Saiph",
+				longitude_J2000: 96.19,
+				effect: "Comando y liderazgo",
+				filePath: "https://www.izarren.top/saiph",
+				magnitude: 6
+			},
+			{
+				name: "Phact",
+				longitude_J2000: 104.41,
+				effect: "Logros duraderos",
+				filePath: "https://www.izarren.top/phact",
+				magnitude: 6
+			},
+			{
+				name: "Wezen",
+				longitude_J2000: 107.11,
+				effect: "Protección en viajes",
+				filePath: "https://www.izarren.top/wezen",
+				magnitude: 6
+			},
+			{
+				name: "Aludra",
+				longitude_J2000: 112.22,
+				effect: "Buen juicio",
+				filePath: "https://www.izarren.top/aludra",
+				magnitude: 6
+			},
+			{
+				name: "Alula Australis",
+				longitude_J2000: 169.21,
+				effect: "Habilidades curativas",
+				filePath: "https://www.izarren.top/alula-australis",
+				magnitude: 6
+			},
+			{
+				name: "Alula Borealis",
+				longitude_J2000: 168.52,
+				effect: "Liderazgo espiritual",
+				filePath: "https://www.izarren.top/alula-borealis",
+				magnitude: 6
+			},
+			{
+				name: "Tania Australis",
+				longitude_J2000: 167.43,
+				effect: "Persistencia",
+				filePath: "https://www.izarren.top/tania-australis",
+				magnitude: 6
+			},
+			{
+				name: "Tania Borealis",
+				longitude_J2000: 166.12,
+				effect: "Determinación",
+				filePath: "https://www.izarren.top/tania-borealis",
+				magnitude: 6
+			},
+			{
+				name: "Talitha",
+				longitude_J2000: 138.21,
+				effect: "Protección familiar",
+				filePath: "https://www.izarren.top/talitha",
+				magnitude: 6
+			},
+			{
+				name: "Nashira",
+				longitude_J2000: 299.41,
+				effect: "Peligros superados",
+				filePath: "https://www.izarren.top/nashira",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Australis",
+				longitude_J2000: 275.52,
+				effect: "Éxito en objetivos",
+				filePath: "https://www.izarren.top/kaus-austral",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Media",
+				longitude_J2000: 274.21,
+				effect: "Intuición espiritual",
+				filePath: "https://www.izarren.top/kaus-media",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Borealis",
+				longitude_J2000: 272.41,
+				effect: "Logros materiales",
+				filePath: "https://www.izarren.top/kaus-boreal",
+				magnitude: 6
+			},
+			{
+				name: "Lesath",
+				longitude_J2000: 264.11,
+				effect: "Peligro y advertencia",
+				filePath: "https://www.izarren.top/lesath",
+				magnitude: 6
+			},
+			{
+				name: "Larawag",
+				longitude_J2000: 251.49,
+				effect: "Peligro de venenos",
+				filePath: "https://www.izarren.top/larawag",
+				magnitude: 6
+			},
+			{
+				name: "Ras Alhague",
+				longitude_J2000: 263.17,
+				effect: "Curación y medicina",
+				filePath: "https://www.izarren.top/rasalhague",
+				magnitude: 6
+			},
+			{
+				name: "Graffias",
+				longitude_J2000: 242.43,
+				effect: "Peligro y malevolencia",
+				filePath: "https://www.izarren.top/grafias",
+				magnitude: 6
+			},
+			{
+				name: "Dschubba",
+				longitude_J2000: 240.47,
+				effect: "Peligro y destrucción",
+				filePath: "https://www.izarren.top/dschubba",
+				magnitude: 6
+			},
+			{
+				name: "Wasat",
+				longitude_J2000: 106.17,
+				effect: "Violencia, malevolencia",
+				filePath: "https://www.izarren.top/wasat",
+				magnitude: 6
+			},
+			{
+				name: "Mirzam",
+				longitude_J2000: 91.21,
+				effect: "Fama y honores inesperados",
+				filePath: "https://www.izarren.top/mirzam",
+				magnitude: 6
+			},
+			{
+				name: "Revati",
+				longitude_J2000: 355.43,
+				effect: "Riqueza y prosperidad, beneficios a través de viajes",
+				filePath: "https://www.izarren.top/revati",
+				magnitude: 6
+			},
+			{
+				name: "Heze",
+				longitude_J2000: 191.15,
+				effect: "Habilidades artísticas y apreciación por la belleza",
+				filePath: "https://www.izarren.top/heze",
+				magnitude: 6
+			},
+			{
+				name: "Arneb",
+				longitude_J2000: 87.32,
+				effect: "Intuición y perseverancia",
+				filePath: "https://www.izarren.top/arneb",
+				magnitude: 6
+			},
+			{
+				name: "Ashlesha",
+				longitude_J2000: 124.20,
+				effect: "Intuición profunda, poder hipnótico y habilidades curativas",
+				filePath: "https://www.izarren.top/ashlesha",
+				magnitude: 6
+			},
+			{
+				name: "Unukalhai",
+				longitude_J2000: 241.54,
+				effect: "Sabiduría oculta y medicina",
+				filePath: "https://www.izarren.top/unukalhai",
+				magnitude: 6
+			}						
+    ];
+
+function calculatePrecession(date) {
+    const currentDate = new Date(date);
+    const year = currentDate.getFullYear() + (currentDate.getMonth() + 1) / 12;
+    const yearsSinceJ2000 = year - 2000.0;
+    const precessionRate = 50.2908 / 3600.0;
+    return precessionRate * yearsSinceJ2000;
+}
+
+function getCurrentStarPosition(star, date) {
+    const precession = calculatePrecession(date);
+    return (star.longitude_J2000 + precession) % 360;
+}
+
+function determineHouse(longitude, ascendant) {
+    if (ascendant === undefined || ascendant === null) return null;
+    let relativeLongitude = longitude - ascendant;
+    if (relativeLongitude < 0) relativeLongitude += 360;
+    const house = Math.floor(relativeLongitude / 30) + 1;
+    return house > 12 ? house - 12 : house;
+}
+
+function getPlanetColor(planet, longitude) {
+    if (planet === 'ASC' || planet === 'MC' || planet === 'DSC' || planet === 'IC') return COLORS.BLACK;
+    
+    if (planet === 'JÚPITER') {
+        if ((longitude >= 306.00 && longitude <= 360.00) || (longitude >= 0.00 && longitude <= 150.00)) 
+            return COLORS.BLUE;
+        if (longitude > 150.00 && longitude < 306.00) 
+            return COLORS.RED;
+    }
+
+    if (planet === 'SATURNO') {
+        if ((longitude >= 330.00 && longitude <= 360.00) || (longitude >= 0.00 && longitude <= 150.00))
+            return COLORS.YELLOW;
+        if (longitude > 240.00 && longitude <= 252.00) return COLORS.YELLOW;
+        if (longitude > 252.00 && longitude <= 330.00) return COLORS.RED;
+        if (longitude > 150.00 && longitude <= 240.00) return COLORS.RED;
+        return COLORS.YELLOW;
+    }
+
+    if (longitude > 150.00 && longitude <= 330.00) {
+        switch(planet) {
+            case 'SOL': case 'MERCURIO': case 'URANO': return COLORS.GREEN;
+            case 'VENUS': case 'LUNA': return COLORS.YELLOW;
+            case 'MARTE': case 'PLUTÓN': return COLORS.BLUE;
+            case 'NEPTUNO': return COLORS.RED;
+            default: return '#000000';
+        }
+    } else {
+        switch(planet) {
+            case 'SOL': case 'MARTE': case 'PLUTÓN': return COLORS.RED;
+            case 'VENUS': return COLORS.GREEN;
+            case 'MERCURIO': case 'SATURNO': case 'URANO': return COLORS.YELLOW;
+            case 'LUNA': case 'NEPTUNO': return COLORS.BLUE;
+            default: return '#000000';
+        }
+    }
+}
+
+function calculateAspects(planets) {
+    const aspects = [];
+    const validPlanets = planets;
+
+    for (let i = 0; i < validPlanets.length; i++) {
+        for (let j = i + 1; j < validPlanets.length; j++) {
+            const planet1 = validPlanets[i];
+            const planet2 = validPlanets[j];
+            let diff = Math.abs(planet1.longitude - planet2.longitude);
+            if (diff > 180) diff = 360 - diff;
+            
+            for (const [aspectType, aspect] of Object.entries(ASPECTS)) {
+                if (Math.abs(diff - aspect.angle) <= aspect.orb) {
+                    aspects.push({
+                        planet1: planet1.name,
+                        planet2: planet2.name,
+                        type: aspectType,
+                        angle: diff,
+                        color: aspect.color
+                    });
+                    break;
+                }
+            }
+        }
+    }
+    return aspects;
+}
+
+function getActiveStars(planets, date) {
+    return FIXED_STARS.filter(star => {
+        const currentLongitude = getCurrentStarPosition(star, date);
+        return planets.some(planet => {
+            const diff = Math.abs(currentLongitude - planet.longitude);
+            const adjustedDiff = Math.min(diff, 360 - diff);
+            const orb = star.magnitude >= 12 ? 2.40 : 1.20;
+            return adjustedDiff <= orb;
+        });
+    });
+}
+
+function findConjunctPlanets(star, planets, date) {
+    const currentLongitude = getCurrentStarPosition(star, date);
+    const orb = star.magnitude >= 12 ? 2.40 : 1.20;
+    return planets.filter(planet => {
+        const diff = Math.abs(currentLongitude - planet.longitude);
+        const adjustedDiff = Math.min(diff, 360 - diff);
+        return adjustedDiff <= orb;
+    }).map(planet => ({
+        name: planet.name,
+        diff: Math.min(
+            Math.abs(currentLongitude - planet.longitude),
+            360 - Math.abs(currentLongitude - planet.longitude)
+        ).toFixed(2)
+    }));
+}
+
+function adjustPlanetLabel(planet, allPlanets) {
+    const baseRadius = DIMENSIONS.innerRadius + 35;
+    const angleDiff = 7;
+    
+    const nearbyPlanets = allPlanets.filter(p => {
+        if (p.name === planet.name) return false;
+        let diff = Math.abs(p.longitude - planet.longitude);
+        if (diff > 180) diff = 360 - diff;
+        return diff < angleDiff;
+    });
+
+    if (nearbyPlanets.length === 0) {
+        return {
+            radius: baseRadius,
+            angleOffset: 0
+        };
+    }
+
+    const isLower = planet.name < nearbyPlanets[0].name;
+    const radiusOffset = isLower ? 0 : 25;
+    const angleOffset = isLower ? -1 : 1;
+
+    return {
+        radius: baseRadius + radiusOffset,
+        angleOffset: angleOffset * 3
+    };
+}
+
+function createArcPath(startAngle, endAngle) {
+    const start = ((startAngle - 90) * Math.PI) / 180;
+    const end = ((endAngle - 90) * Math.PI) / 180;
+    
+    const x1 = DIMENSIONS.centerX + DIMENSIONS.radius * Math.cos(start);
+    const y1 = DIMENSIONS.centerY + DIMENSIONS.radius * Math.sin(start);
+    const x2 = DIMENSIONS.centerX + DIMENSIONS.radius * Math.cos(end);
+    const y2 = DIMENSIONS.centerY + DIMENSIONS.radius * Math.sin(end);
+    
+    const x1Inner = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(start);
+    const y1Inner = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(start);
+    const x2Inner = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(end);
+    const y2Inner = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(end);
+    
+    const largeArcFlag = end - start <= Math.PI ? "0" : "1";
+    
+    return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
+}
+
+function App() {
+    // Estados
+    const [cities, setCities] = React.useState([]);
+    const [selectedCity, setSelectedCity] = React.useState('');
+    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
+    const [time, setTime] = React.useState(new Date().toTimeString().slice(0,5));
+    const [planets, setPlanets] = React.useState([]);
+    const [aspects, setAspects] = React.useState([]);
+    const [error, setError] = React.useState('');
+    const [selectedAspect, setSelectedAspect] = React.useState(null);
+    const [selectedPlanet, setSelectedPlanet] = React.useState(null);
+    const [activeStars, setActiveStars] = React.useState([]);
+    const [dignityTable, setDignityTable] = React.useState(null);
+    const [birthType, setBirthType] = React.useState(null);
+    const [triplicityTable, setTriplicityTable] = React.useState(null);
+    // Nuevo estado para interpretaciones
+    const [interpretations, setInterpretations] = React.useState({
+        planets_in_signs: [],
+        planets_in_houses: [],
+        aspects: [],
+        house_rulers: []
+    });
+
+    React.useEffect(() => {
+        fetch('https://software-astrologico.onrender.com/cities')
+            .then(response => response.json())
+            .then(data => {
+                setCities(data);
+                if(data.length > 0) setSelectedCity(data[0].value);
+            })
+            .catch(err => setError('Error cargando ciudades'));
+    }, []);
+
+    React.useEffect(() => {
+        if (planets.length > 0) {
+            setActiveStars(getActiveStars(planets, date));
+        }
+    }, [planets, date]);
+
+    // Manejadores de eventos
+    const handleCalculate = () => {
+        fetch('https://software-astrologico.onrender.com/calculate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                city: selectedCity,
+                date: date,
+                time: time
+            })
+        })
+
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+            
+            const asc = data.positions.find(p => p.name === 'ASC');
+            
+            const planetsWithHouses = data.positions.map(planet => ({
+                ...planet,
+                house: asc ? determineHouse(planet.longitude, asc.longitude) : null
+            }));
+            
+            setPlanets(planetsWithHouses);
+            setAspects(calculateAspects(planetsWithHouses));
+            
+            if (data.dignity_table) {
+                setDignityTable(data.dignity_table);
+            }
+            
+            if (data.houses_analysis) {
+                setTriplicityTable(data.houses_analysis.houses);
+                setBirthType(data.houses_analysis.birth_type);
+            }
+
+            if (data.interpretations) {
+                setInterpretations(data.interpretations);
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            setError(err.message);
+        });
+    };
+
+    const handlePlanetClick = (planetName) => {
+        setSelectedPlanet(selectedPlanet === planetName ? null : planetName);
+        setSelectedAspect(null);
+    };
+
+    const handleAspectClick = (aspect) => {
+        setSelectedAspect(selectedAspect === aspect ? null : aspect);
+        setSelectedPlanet(null);
+    };
+
+    const handleStarClick = (star) => {
+    if (star.filePath) {
+        // ✅ Si es una URL externa, abrirla directamente en una nueva pestaña
+        if (star.filePath.startsWith("https://")) {
+            window.open(star.filePath, "_blank");
+            return;
+        }
+
+        // ✅ Si es un archivo local, enviarlo al servidor para procesarlo
+        window.location.href = `https://software-astrologico.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
+    }
+};
+
+	// Renderizado
+    return (
+        <div>
+            <div className="controls">
+                <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}>
+                    <option value="">Selecciona una ciudad</option>
+                    {cities.map(city => (
+                        <option key={city.value} value={city.value}>{city.name}</option>
+                    ))}
+                </select>
+                <input 
+                    type="date" 
+                    value={date}
+                    onChange={e => setDate(e.target.value)}
+                />
+                <input 
+                    type="time" 
+                    value={time}
+                    onChange={e => setTime(e.target.value)}
+                />
+                <button onClick={handleCalculate}>Calcular</button>
+            </div>
+
+            {error && <div style={{color: 'red'}}>{error}</div>}
+
+            {planets.length > 0 && (
+                <>
+                    <div className="wheel-container">
+                        <svg viewBox="0 0 600 600">
+                            {/* Círculo exterior */}
+                            <circle
+                                cx={DIMENSIONS.centerX}
+                                cy={DIMENSIONS.centerY}
+                                r={DIMENSIONS.radius}
+                                fill="none"
+                                stroke="#333"
+                                strokeWidth="2"
+                            />
+
+                            {/* Signos zodiacales */}
+                            {SIGNS.map(sign => {
+                                const midAngle = ((sign.start + sign.length/2 - 90) * Math.PI) / 180;
+                                const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
+                                const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
+                                
+                                return (
+                                    <g key={sign.name}>
+                                        <path
+                                            d={createArcPath(sign.start, sign.start + sign.length)}
+                                            fill={sign.color}
+                                            stroke="#333"
+                                            strokeWidth="1"
+                                        />
+                                        <text
+                                            x={glyphX}
+                                            y={glyphY}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            fontSize="20"
+                                        >
+                                            {sign.symbol}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+
+                            {/* Círculo interior */}
+                            <circle
+                                cx={DIMENSIONS.centerX}
+                                cy={DIMENSIONS.centerY}
+                                r={DIMENSIONS.innerRadius}
+                                fill="white"
+                                stroke="#333"
+                                strokeWidth="1"
+                            />
+
+                            {/* Aspectos */}
+                            {aspects.map((aspect, index) => {
+                                const planet1 = planets.find(p => p.name === aspect.planet1);
+                                const planet2 = planets.find(p => p.name === aspect.planet2);
+                                
+                                const angle1 = (planet1.longitude - 90) * Math.PI / 180;
+                                const angle2 = (planet2.longitude - 90) * Math.PI / 180;
+                                
+                                const x1 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle1);
+                                const y1 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle1);
+                                const x2 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle2);
+                                const y2 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle2);
+                                
+                                return (
+                                    <line
+                                        key={`aspect-${index}`}
+                                        x1={x1}
+                                        y1={y1}
+                                        x2={x2}
+                                        y2={y2}
+                                        stroke={aspect.color}
+                                        strokeWidth={selectedAspect === aspect || 
+                                            (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) ? "3" : "1"}
+                                        strokeDasharray={aspect.type === 'OPPOSITION' ? "5,5" : "none"}
+                                        className="aspect-line"
+                                        onClick={() => handleAspectClick(aspect)}
+                                    />
+                                );
+                            })}
+
+                            {/* Estrellas fijas */}
+                            {activeStars.map((star, index) => {
+                                const currentLongitude = getCurrentStarPosition(star, date);
+                                const angle = (currentLongitude - 90) * Math.PI / 180;
+                                const starRadius = (DIMENSIONS.radius + DIMENSIONS.innerRadius) / 1.8;
+                                const x = DIMENSIONS.centerX + starRadius * Math.cos(angle);
+                                const y = DIMENSIONS.centerY + starRadius * Math.sin(angle);
+                                
+                                const conjunctPlanets = findConjunctPlanets(star, planets, date);
+                                
+                                return (
+                                    <g 
+                                        key={`star-${index}`}
+                                        onClick={() => handleStarClick(star)}
+                                        style={{cursor: 'pointer'}}
+                                    >
+                                        <text
+                                            x={x}
+                                            y={y}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            fill="#FFD700"
+                                            stroke="#000"
+                                            strokeWidth="0.5"
+                                            style={{
+                                                fontSize: star.magnitude === 12 ? "16px" : "12px",
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            ★
+                                        </text>
+                                        <title>
+                                            {star.name} - {conjunctPlanets.map(p => 
+                                                `${PLANET_SYMBOLS[p.name]} (${p.diff}°)`
+                                            ).join(', ')}
+                                        </title>
+                                    </g>
+                                );
+                            })}
+
+                            {/* Planetas */}
+                            {planets.map((planet) => {
+                                const adjustment = adjustPlanetLabel(planet, planets);
+                                const adjustedAngle = ((planet.longitude + adjustment.angleOffset - 90) * Math.PI) / 180;
+                                const x = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(adjustedAngle);
+                                const y = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(adjustedAngle);
+                                
+                                const labelX = DIMENSIONS.centerX + adjustment.radius * Math.cos(adjustedAngle);
+                                const labelY = DIMENSIONS.centerY + adjustment.radius * Math.sin(adjustedAngle);
+                                
+                                const isSelected = selectedPlanet === planet.name;
+                                
+                                return (
+                                    <g 
+                                        key={planet.name}
+                                        onClick={() => handlePlanetClick(planet.name)}
+                                        style={{cursor: 'pointer'}}
+                                    >
+                                        <circle
+                                            cx={x}
+                                            cy={y}
+                                            r={isSelected ? "6" : "4"}
+                                            fill={getPlanetColor(planet.name, planet.longitude)}
+                                            stroke="#000"
+                                            strokeWidth={isSelected ? "2" : "1"}
+                                        />
+                                        <text
+                                            x={labelX}
+                                            y={labelY}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            className="planet-label"
+                                            style={{
+                                                fontSize: isSelected ? "24px" : "20px"
+                                            }}
+                                        >
+                                            {PLANET_SYMBOLS[planet.name]}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+                        </svg>
+                    </div>
+
+                    <div className="planet-container">
+                        <div className="aspects-list">
+                            <h3>Aspectos:</h3>
+                            {aspects.map((aspect, index) => (
+                                <div 
+                                    key={`aspect-desc-${index}`} 
+                                    className="aspect-list-item"
+                                    style={{
+                                        backgroundColor: selectedAspect === aspect || 
+                                            (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) 
+                                            ? '#f0f0f0' 
+                                            : 'transparent'
+                                    }}
+                                    onClick={() => handleAspectClick(aspect)}
+                                >
+                                    {PLANET_SYMBOLS[aspect.planet1]} {ASPECTS[aspect.type].name} {PLANET_SYMBOLS[aspect.planet2]} ({aspect.angle.toFixed(2)}°)
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="planets-list">
+                            <h3>Planetas:</h3>
+                            {planets.map(planet => (
+                                <div 
+                                    key={planet.name}
+                                    className="planet-list-item"
+                                    style={{
+                                        backgroundColor: selectedPlanet === planet.name ? '#f0f0f0' : 'transparent'
+                                    }}
+                                    onClick={() => handlePlanetClick(planet.name)}
+                                >
+                                    {PLANET_SYMBOLS[planet.name]} {planet.longitude.toFixed(2)}° {planet.sign}
+                                    {planet.house !== undefined && ` - Casa ${planet.house}`}
+                                </div>
+                            ))}
+                        </div>
+
+                        {activeStars.length > 0 && (
+                            <div className="fixed-stars-list">
+                                <h3>Estrellas Fijas en Conjunción:</h3>
+                                {activeStars.map((star, index) => {
+                                    const conjunctPlanets = findConjunctPlanets(star, planets, date);
+                                    const currentLongitude = getCurrentStarPosition(star, date);
+                                    return (
+                                        <div 
+                                            key={`star-${index}`}
+                                            className="planet-list-item"
+                                            onClick={() => handleStarClick(star)}
+                                            style={{cursor: 'pointer'}}
+                                        >
+                                            <span className="star-symbol">★</span> {star.name} ({currentLongitude.toFixed(2)}°)
+                                            <br/>
+                                            <small>
+                                                Conjunción con: {conjunctPlanets.map(p => 
+                                                    `${PLANET_SYMBOLS[p.name]} (${p.diff}°)`
+                                                ).join(', ')}
+                                                <br/>
+                                                Efecto: {star.effect}
+                                            </small>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {dignityTable && (
+                            <div className="dignity-container">
+                                <h3>Tabla de Dignidades</h3>
+                                <table className="dignity-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Planeta</th>
+                                            <th>Signo</th>
+                                            <th>Casa</th>
+                                            <th>Dignidad</th>
+                                            <th>Angular</th>
+                                            <th>Aspectos</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+										{dignityTable.tabla.map((row, index) => (
+                                            <tr key={index}>
+                                                <td>{PLANET_SYMBOLS[row.planeta]} {row.planeta}</td>
+                                                <td>{row.signo}</td>
+                                                <td>{row.casa}</td>
+                                                <td>{row.puntos_dignidad}</td>
+                                                <td>{row.puntos_angular}</td>
+                                                <td>{row.puntos_aspectos}</td>
+                                                <td>{row.total_planeta}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="6">Total General</td>
+                                            <td>{dignityTable.total_general}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        )}
+
+                        {triplicityTable && (
+                            <div className="triplicity-container">
+                                <h3>Triplicidades</h3>
+                                <div style={{marginBottom: '10px'}}>
+                                    Lado: <strong>{birthType?.toUpperCase()}</strong>
+                                </div>
+                                <table className="triplicity-table">
+                                    <thead>
+                                        <tr>
+                                            <th>CASA</th>
+                                            <th>ELEMENTO</th>
+                                            <th>RIGE</th>
+                                            <th>0_a_28</th>
+                                            <th>28_a_56</th>
+                                            <th>56_a_84</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {triplicityTable.map((house, index) => {
+                                            const dignityValues = dignityTable.tabla.reduce((acc, row) => {
+                                                acc[row.planeta] = row.total_planeta;
+                                                return acc;
+                                            }, {});
+
+                                            const rulers = house.triplicity_rulers;
+                                            let displayRulers;
+                    
+                                            if (birthType === 'seco') {
+                                                displayRulers = {
+                                                    first: rulers.regente2,  // Seco
+                                                    second: rulers.regente1,  // Húmedo
+                                                    third: rulers.regente3   // Participativo
+                                                };
+                                            } else {
+                                                displayRulers = {
+                                                    first: rulers.regente1,  // Húmedo
+                                                    second: rulers.regente2,  // Seco
+                                                    third: rulers.regente3   // Participativo
+                                                };
+                                            }
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{house.element}</td>
+                                                    <td>{house.meaning}</td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.first]}
+                                                        {dignityValues[displayRulers.first] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.first]})`}
+                                                    </td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.second]}
+                                                        {dignityValues[displayRulers.second] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.second]})`}
+                                                    </td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.third]}
+                                                        {dignityValues[displayRulers.third] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.third]})`}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {/* Sección de interpretaciones */}
+                        {interpretations && (
+                            <div className="interpretations-container">
+                                <div className="interpretation-section">
+                                    <h3>Planetas en Signos</h3>
+                                    {interpretations.planets_in_signs.map((interp, index) => (
+                                        <div key={`sign-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {PLANET_SYMBOLS[interp.planet]} en {interp.sign}
+                                            </div>
+                                            {interp.interpretation.physical && (
+                                                <div className="physical-plane">
+                                                    <div className="plane-title">Plano Físico:</div>
+                                                    <div className="interpretation-content">
+                                                        {interp.interpretation.physical}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {interp.interpretation.astral && (
+                                                <div className="astral-plane">
+                                                    <div className="plane-title">Plano Astral:</div>
+                                                    <div className="interpretation-content">
+                                                        {interp.interpretation.astral}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Planetas en Casas</h3>
+                                    {interpretations.planets_in_houses.map((interp, index) => (
+                                        <div key={`house-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {PLANET_SYMBOLS[interp.planet]} en Casa {interp.house}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Aspectos</h3>
+                                    {interpretations.aspects.map((interp, index) => (
+                                        <div key={`aspect-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {interp.planets} - {interp.type}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Regentes de Casas</h3>
+                                    {interpretations.house_rulers.map((interp, index) => (
+                                        <div key={`ruler-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                Regente {interp.ruler_type} de Casa {interp.house} ({interp.ruler}) 
+                                                en Casa {interp.ruler_house}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
+        </div>
+    );
+}
+	    
+document.addEventListener("click", function(event) {
+    let link = event.target.closest(".star-link");
+    if (!link) return;
+
+    event.preventDefault();
+    const url = link.getAttribute("href");
+
+    console.log("Intentando abrir:", url); // Depuración en consola
+
+    // ✅ Abrir directamente la URL sin pasar por el servidor
+    window.open(url, "_blank");
+});
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
