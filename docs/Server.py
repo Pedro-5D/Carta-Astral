@@ -1052,9 +1052,6 @@ def obtener_ciudades():
     ciudades = buscar_ciudades(nombre_ciudad)
     return jsonify(ciudades)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
     print("Cargando efemérides, configuración e interpretaciones...")
@@ -1066,4 +1063,5 @@ if __name__ == '__main__':
     for city_key, city_data in CITIES_DB.items():
         print(f"- {city_data['name']}")
     print("\nServidor iniciando en https://software-astrologico.onrender.com")
+    
     app.run(host='0.0.0.0', port=10000, debug=True)
