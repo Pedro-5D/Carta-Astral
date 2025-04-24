@@ -1797,17 +1797,15 @@ function App() {
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(() => {
-        const cityForm = document.getElementById("city-form");
-        if (cityForm) {
-            cityForm.addEventListener("submit", function(event) {
-                event.preventDefault();
-                console.log("Formulario enviado correctamente.");
-            });
-        } else {
-            console.error("El formulario 'city-form' no existe en el DOM.");
-        }
-    }, 500); // 🔹 Espera breve para asegurar que React ha renderizado el formulario
+    const cityForm = document.getElementById("city-form");
+    if (cityForm) {
+        cityForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            console.log("Formulario enviado correctamente.");
+        });
+    } else {
+        console.error("El formulario 'city-form' no existe en el DOM.");
+    }
 });
 </script>
 </body>
