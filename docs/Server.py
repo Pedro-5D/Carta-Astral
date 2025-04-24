@@ -943,7 +943,9 @@ def obtener_zona_horaria(ciudad, fecha):
         elif "America/Santiago" in resultado.iloc[-1][0] or "Australia/Sydney" in resultado.iloc[-1][0]:  # Hemisferio Sur
             if mes in [12, 1, 2, 3]:
                 zona_horaria = "CLST"  # Verano en Chile
-        
+        elif "Australia/Sydney" in resultado.iloc[-1][0]:  # Australia - Verano
+            if mes in [10, 11, 12, 1, 2, 3, 4]:  # De octubre a abril
+                zona_horaria = "AEDT"  # Horario de verano en Australia
         return zona_horaria
 
     return "Ciudad no encontrada en la base de datos."
