@@ -12,12 +12,12 @@ import sqlite3
 import csv
 
 # 🔹 **Cargar efemérides correctamente**
-eph_path = Path("./de421.bsp")  # 🔹 Prefijo './' para evitar errores en Render
+eph_path = Path("./de421.bsp")  # ✅ Está en la carpeta principal
 
 if eph_path.exists():
     eph = load(str(eph_path))
 else:
-    raise FileNotFoundError(f"Archivo no encontrado: {eph_path}. Verifica que 'de421.bsp' esté en la carpeta 'docs'.")
+    raise FileNotFoundError(f"Archivo no encontrado: {eph_path}. Asegúrate de que 'de421.bsp' esté en la carpeta principal.")
 
 ts = load.timescale()
 
@@ -40,17 +40,18 @@ CREATE TABLE IF NOT EXISTS cities (
 """)
 
 # **Solo cargar el CSV si la tabla está vacía**
-cursor.execute("SELECT COUNT(*) FROM cities")
-num_rows = cursor.fetchone()[0]
+timezone_path = Path("./timezone.csv")  # ✅ Se encuentra en la carpeta principal
 
-if num_rows == 0:
-    with open("timezone.csv", encoding="utf-8") as file:  # 🔹 Ahora está en la carpeta principal
+if timezone_path.exists():
+    with open(str(timezone_path), encoding="utf-8") as file:
         reader = csv.reader(file)
         next(reader)  # Saltar encabezado
         for row in reader:
             cursor.execute("INSERT OR IGNORE INTO cities VALUES (?, ?, ?, ?, ?)", row)
 
     conn.commit()
+else:
+    raise FileNotFoundError(f"Archivo no encontrado: {timezone_path}. Asegúrate de que 'timezone.csv' esté en la carpeta principal.")
 
 conn.close()
 
@@ -81,15 +82,15 @@ def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
         try:
             dt_local = datetime.combine(date_obj, time_obj).replace(tzinfo=ZoneInfo(timezone_str))
         except Exception:
-            return {"error": f"Zona horaria no válida: {timezone_str}. Verifica el nombre.", "status": 400}
+            return jsonify({"error": f"Zona horaria no válida: {timezone_str}. Verifica el nombre."}), 400
 
         dt_utc = dt_local.astimezone(ZoneInfo("UTC"))
         en_dst = dt_utc.dst() != timedelta(0)
 
-        return dt_utc, en_dst
+        return jsonify({"utc_time": dt_utc.strftime("%Y-%m-%d %H:%M:%S"), "dst": en_dst}), 200
 
     except ValueError:
-        return {"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'.", "status": 400}
+        return jsonify({"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'."}), 400
 
 def init_interpreter():
     global interpreter
