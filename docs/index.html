@@ -1839,14 +1839,14 @@ root.render(<App />);
 document.getElementById("city-form").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const cityName = document.getElementById("city").value;
+    const cityName = document.getElementById("city").value.trim();
     if (!cityName) {
         alert("Por favor, ingresa una ciudad.");
         return;
     }
 
     try {
-        // Consulta a tu servidor que usa TimeZoneDB en lugar de GeoNames
+        // ✅ Consulta a tu servidor en Render que ahora usa TimeZoneDB
         const response = await fetch(`/buscar_ciudad?nombre=${cityName}`);
         const data = await response.json();
 
