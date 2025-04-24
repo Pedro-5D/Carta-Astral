@@ -8,13 +8,56 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { 
-            margin: 0; 
-            padding: 20px; 
+        body {
+            margin: 0;
+            padding: 20px;
             background: #f5f5f5;
             font-family: Arial, sans-serif;
         }
-        .wheel-container { 
+        .form-container {
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-container input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-container button:hover {
+            background: #0056b3;
+        }
+        .results-container {
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+       .wheel-container { 
             width: 800px; 
             height: 800px; 
             margin: 0 auto;
@@ -1266,29 +1309,58 @@ function createArcPath(startAngle, endAngle) {
     return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
 }
 
-function App() {
-    // Estados
-    const [cities, setCities] = React.useState([]);
-    const [selectedCity, setSelectedCity] = React.useState('');
-    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
-    const [time, setTime] = React.useState(new Date().toTimeString().slice(0,5));
-    const [planets, setPlanets] = React.useState([]);
-    const [aspects, setAspects] = React.useState([]);
-    const [error, setError] = React.useState('');
-    const [selectedAspect, setSelectedAspect] = React.useState(null);
-    const [selectedPlanet, setSelectedPlanet] = React.useState(null);
-    const [activeStars, setActiveStars] = React.useState([]);
-    const [dignityTable, setDignityTable] = React.useState(null);
-    const [birthType, setBirthType] = React.useState(null);
-    const [triplicityTable, setTriplicityTable] = React.useState(null);
-    // Nuevo estado para interpretaciones
-    const [interpretations, setInterpretations] = React.useState({
-        planets_in_signs: [],
-        planets_in_houses: [],
-        aspects: [],
-        house_rulers: []
-    });
+<script type="text/babel">
+        const App = () => {
+            const [cityName, setCityName] = React.useState("");
+            const [results, setResults] = React.useState([]);
+            const [error, setError] = React.useState(null);
 
+            const handleSearch = async () => {
+                try {
+                    setError(null);
+                    const response = await fetch(`/buscar_ciudad?nombre=${encodeURIComponent(cityName)}`);
+                    if (!response.ok) {
+                        throw new Error("Error al buscar ciudades");
+                    }
+                    const data = await response.json();
+                    setResults(data);
+                } catch (err) {
+                    setError(err.message);
+                }
+            };
+
+            return (
+                <div>
+                    <div className="form-container">
+                        <label htmlFor="city-input">Introduce el nombre de la ciudad:</label>
+                        <input
+                            id="city-input"
+                            type="text"
+                            value={cityName}
+                            onChange={(e) => setCityName(e.target.value)}
+                            placeholder="Ejemplo: Madrid"
+                        />
+                        <button onClick={handleSearch}>Buscar</button>
+                    </div>
+                    {error && <div className="error-message">{error}</div>}
+                    <div className="results-container">
+                        {results.length > 0 ? (
+                            results.map((city, index) => (
+                                <div key={index} className="result-item">
+                                    {city.name} - {city.country} (GMT Offset: {city.gmt_offset})
+                                </div>
+                            ))
+                        ) : (
+                            <div>No hay resultados</div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+<script>
     React.useEffect(() => {
         fetch('https://software-astrologico.onrender.com/cities')
             .then(response => response.json())
