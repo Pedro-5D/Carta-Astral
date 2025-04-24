@@ -20,22 +20,41 @@ import requests
 
 app = Flask(__name__)
 
-import requests
+import sqlite3
+import csv
 
-def buscar_ciudades(nombre_ciudad):
-    url = f"https://api.geonames.org/searchJSON?q={nombre_ciudad}&maxRows=10&username=Pedro728"
-    respuesta = requests.get(url)
-    datos = respuesta.json()
+conn = sqlite3.connect("timezone.db")
+cursor = conn.cursor()
 
-    ciudades = []
-    for ciudad in datos.get("geonames", []):
-        ciudades.append({
-            "name": ciudad["name"],
-            "country": ciudad["countryName"],
-            "timezone": ciudad.get("timezone", "No disponible")  # Agrega la zona horaria
-        })
-    
-    return ciudades
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS cities (
+    zone_name TEXT PRIMARY KEY,
+    country_code TEXT,
+    abbreviation TEXT,
+    gmt_offset INTEGER,
+    dst INTEGER
+)
+""")
+
+with open("timezone.csv", encoding="utf-8") as file:
+    reader = csv.reader(file)
+    next(reader)  # Saltar encabezado
+    for row in reader:
+        cursor.execute("INSERT OR IGNORE INTO cities VALUES (?, ?, ?, ?, ?)", row)
+
+conn.commit()
+conn.close()
+
+def buscar_ciudad(nombre_ciudad):
+    conn = sqlite3.connect("timezone.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT zone_name, country_code, abbreviation, gmt_offset FROM cities WHERE zone_name LIKE ?", (f"%{nombre_ciudad}%",))
+    resultado = cursor.fetchall()
+
+    conn.close()
+
+    return [{"name": row[0], "country": row[1], "timezone": row[2], "gmt_offset": row[3]} for row in resultado]
 
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
