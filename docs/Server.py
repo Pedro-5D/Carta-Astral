@@ -15,11 +15,6 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 
-from flask import Flask, request, jsonify
-import requests
-
-app = Flask(__name__)
-
 import sqlite3
 import csv
 
@@ -49,37 +44,37 @@ def buscar_ciudad(nombre_ciudad):
     conn = sqlite3.connect("timezone.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT zone_name, country_code, abbreviation, gmt_offset FROM cities WHERE zone_name LIKE ?", (f"%{nombre_ciudad}%",))
-    resultado = cursor.fetchall()
+    cursor.execute("""
+        SELECT zone_name, country_code, abbreviation, gmt_offset 
+        FROM cities 
+        WHERE LOWER(zone_name) LIKE LOWER(?)
+    """, (f"%{nombre_ciudad}%",))
 
+    resultado = cursor.fetchall()
     conn.close()
 
     return [{"name": row[0], "country": row[1], "timezone": row[2], "gmt_offset": row[3]} for row in resultado]
-
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 
 def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
     """Convierte fecha y hora local a UTC con ajuste de horario de verano/invierno (DST)."""
 
     try:
-        # ✅ Convertir fecha de 'YYYY-MM-DD' a objeto datetime
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
-
-        # ✅ Convertir hora a objeto time
         time_obj = datetime.strptime(time_str, "%H:%M").time()
 
-        # ✅ Combinar fecha y hora y aplicar zona horaria local
-        dt_local = datetime.combine(date_obj, time_obj).replace(tzinfo=ZoneInfo(timezone_str))
-        
-        # ✅ Convertir a UTC y detectar horario de verano
+        # Verificar si la zona horaria es válida antes de aplicarla
+        try:
+            dt_local = datetime.combine(date_obj, time_obj).replace(tzinfo=ZoneInfo(timezone_str))
+        except Exception:
+            return {"error": f"Zona horaria no válida: {timezone_str}"}
+
         dt_utc = dt_local.astimezone(ZoneInfo("UTC"))
         en_dst = dt_utc.dst() != timedelta(0)
 
         return dt_utc, en_dst
 
     except ValueError:
-        raise ValueError(f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'.")
+        return {"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'."}
 
 def init_interpreter():
     global interpreter
