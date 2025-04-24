@@ -3,16 +3,16 @@ from flask_cors import CORS
 from datetime import datetime, timezone, timedelta
 from skyfield.api import load, wgs84
 from math import sin, cos, tan, atan, atan2, radians, degrees
+from zoneinfo import ZoneInfo
+from pathlib import Path
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
 import sqlite3
 import csv
-from zoneinfo import ZoneInfo
-from pathlib import Path
 
 # 🔹 **Cargar efemérides correctamente**
-eph_path = Path("docs/de421.bsp")
+eph_path = Path("./docs/de421.bsp")  # 🔹 Prueba con './docs/' en lugar de 'docs/'
 
 if eph_path.exists():
     eph = load(str(eph_path))
