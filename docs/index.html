@@ -222,8 +222,7 @@ const DIMENSIONS = {
 };
 
 <form id="city-form">
-    <label for="city">Selecciona tu ciudad:</label>
-    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad...">
+    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
     <button type="submit">Buscar</button>
 </form>
 <p id="city-results"></p>
@@ -1836,34 +1835,40 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 </script>
 <script>
-document.getElementById("city-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function() {
+    const cityForm = document.getElementById("city-form");
+    if (cityForm) {
+        cityForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
 
-    const cityName = document.getElementById("city").value.trim();
-    if (!cityName) {
-        alert("Por favor, ingresa una ciudad.");
-        return;
-    }
+            const cityName = document.getElementById("city").value.trim();
+            if (!cityName) {
+                alert("Por favor, ingresa una ciudad.");
+                return;
+            }
 
-    try {
-        // ✅ Consulta a tu servidor en Render que ahora usa TimeZoneDB
-        const response = await fetch(`/buscar_ciudad?nombre=${cityName}`);
-        const data = await response.json();
+            try {
+                const response = await fetch(`/buscar_ciudad?nombre=${cityName}`);
+                const data = await response.json();
 
-        let resultsContainer = document.getElementById("city-results");
-        resultsContainer.innerHTML = "";
+                let resultsContainer = document.getElementById("city-results");
+                resultsContainer.innerHTML = "";
 
-        if (data.length === 0) {
-            resultsContainer.innerHTML = "<p>No se encontraron ciudades.</p>";
-        } else {
-            data.forEach(city => {
-                let cityElement = document.createElement("p");
-                cityElement.textContent = `${city.name}, ${city.country} (Zona horaria: ${city.timezone})`;
-                resultsContainer.appendChild(cityElement);
-            });
-        }
-    } catch (error) {
-        console.error("Error al buscar ciudades:", error);
+                if (data.length === 0) {
+                    resultsContainer.innerHTML = "<p>No se encontraron ciudades.</p>";
+                } else {
+                    data.forEach(city => {
+                        let cityElement = document.createElement("p");
+                        cityElement.textContent = `${city.name}, ${city.country} (Zona horaria: ${city.timezone})`;
+                        resultsContainer.appendChild(cityElement);
+                    });
+                }
+            } catch (error) {
+                console.error("Error al buscar ciudades:", error);
+            }
+        });
+    } else {
+        console.error("El formulario 'city-form' no existe en el DOM.");
     }
 });
 </script>
