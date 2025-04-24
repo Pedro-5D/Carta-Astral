@@ -1266,28 +1266,27 @@ function createArcPath(startAngle, endAngle) {
 }
 
 function App() {
-        const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
-        const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
+    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
+    const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
 
-        return (
-            <div>
-                <form id="city-form">
-                    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                    <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                    <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
-                    <button type="submit">Buscar</button>
-                </form>
-                <p id="city-results"></p>
-            </div>
-        );
-    }
-
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
     React.useEffect(() => {
         if (planets.length > 0) {
             setActiveStars(getActiveStars(planets, date));
         }
-    }, [planets, date]);
+    }, [planets, date]); // 🔹 Ahora está dentro del componente
+
+    return (
+        <div>
+            <form id="city-form">
+                <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+                <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+                <button type="submit">Buscar</button>
+            </form>
+            <p id="city-results"></p>
+        </div>
+    );
+}
 
     // Manejadores de eventos
     const handleCalculate = () => {
