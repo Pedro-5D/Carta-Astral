@@ -29,7 +29,7 @@ ciudades = cargar_ciudades()
 # 🔹 Cargar datos de husos horarios desde CSV
 def cargar_husos_horarios():
     columnas = ["timezone", "country_code", "abbreviation", "timestamp", "utc_offset", "dst"]  # Agregar nombres de columna
-    df = pd.read_csv("docs/time_zone.csv", names=columnas, header=None)  # Cargar CSV sin encabezados
+    df = pd.read_csv("./time_zone.csv", names=columnas, header=None)  # Cargar CSV sin encabezados
     return df.set_index("country_code").to_dict(orient="index")
 
 husos_horarios = cargar_husos_horarios()
