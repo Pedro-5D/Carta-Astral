@@ -923,10 +923,10 @@ def calculate_positions(date_str, time_str, lat=None, lon=None):
         raise
 
 def obtener_zona_horaria(ciudad):
-    resultado = df[df.iloc[:, 0].str.lower() == ciudad.lower()]
+    resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
     if not resultado.empty:
-        return resultado.iloc[0][2]  # Cambia el índice si es otra columna con la zona horaria
-    return None  # Si la ciudad no está en el CSV
+        return resultado.iloc[0][2]  # Ajusta el índice si otra columna tiene la zona horaria
+    return "Ciudad no encontrada en la base de datos."
 
 @app.route('/')
 def serve_html():
