@@ -1273,15 +1273,18 @@ import Papa from "papaparse";
 function App() {
     const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
+    const [inputDate, setInputDate] = useState("");
+    const [inputTime, setInputTime] = useState("");
+    const [utcTime, setUtcTime] = useState("");
 
     useEffect(() => {
-        fetch("/path/to/time_zone.csv") // Cambia a la ruta correcta del archivo
+        fetch("/path/to/time_zone.csv") // Ruta del archivo CSV
             .then((response) => response.text())
             .then((data) => {
                 Papa.parse(data, {
                     header: true,
                     complete: (results) => {
-                        setCities(results.data); // Guarda las ciudades
+                        setCities(results.data);
                     },
                 });
             });
@@ -1292,63 +1295,52 @@ function App() {
         setSelectedCity(city);
     };
 
+    const handleCalculate = () => {
+        if (selectedCity && inputDate && inputTime) {
+            const utc = calculateUTC(inputDate, inputTime, selectedCity.timeZone);
+            setUtcTime(utc);
+        }
+    };
+
     return (
         <div>
-            <h1>Selecciona una Ciudad</h1>
-            <select onChange={handleCityChange}>
-                <option value="">Selecciona una ciudad...</option>
-                {cities.map((city, index) => (
-                    <option key={index} value={city.cityName}>
-                        {city.cityName}
-                    </option>
-                ))}
-            </select>
-            {selectedCity && (
+            <h1>Calcula la Carta Astral</h1>
+            <div>
+                <label>Selecciona una ciudad:</label>
+                <select onChange={handleCityChange}>
+                    <option value="">Selecciona una ciudad...</option>
+                    {cities.map((city, index) => (
+                        <option key={index} value={city.cityName}>
+                            {city.cityName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <label>Fecha:</label>
+                <input
+                    type="date"
+                    value={inputDate}
+                    onChange={(e) => setInputDate(e.target.value)}
+                />
+            </div>
+            <div>
+                <label>Hora:</label>
+                <input
+                    type="time"
+                    value={inputTime}
+                    onChange={(e) => setInputTime(e.target.value)}
+                />
+            </div>
+            <button onClick={handleCalculate}>Calcular</button>
+            {utcTime && (
                 <div>
-                    <p>Ciudad seleccionada: {selectedCity.cityName}</p>
-                    <p>Huso horario: {selectedCity.timeZone}</p>
+                    <p>Hora en UTC: {utcTime}</p>
                 </div>
             )}
         </div>
     );
 }
-
-export default App;
-
-import { DateTime } from "luxon";
-
-function calculateUTC(date, time, timeZone) {
-    const localDateTime = DateTime.fromFormat(`${date} ${time}`, "yyyy-MM-dd HH:mm", { zone: timeZone });
-    return localDateTime.toUTC().toISO(); // Devuelve el tiempo en formato UTC
-}
-
-const utcTime = calculateUTC("2025-04-24", "18:44", "Europe/Madrid");
-console.log(`Hora en UTC: ${utcTime}`);
-	
-        // Renderizado del componente
-        return (
-            <div>
-                <h1>Búsqueda de Ciudad</h1>
-                <label htmlFor="city-input">Introducir ciudad:</label>
-                <input
-                    id="city-input"
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Escribe tu ciudad..."
-                />
-                <button type="button" onClick={handleSearchCity}>
-                    Buscar ciudad
-                </button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {results && <p>{results}</p>}
-            </div>
-        );
-    }
-
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
-<script>
     
     // Manejadores de eventos
     const handleCalculate = () => {
