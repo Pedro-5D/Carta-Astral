@@ -1846,7 +1846,8 @@ document.getElementById("city-form").addEventListener("submit", async function(e
     }
 
     try {
-        const response = await fetch(`https://software-astrologico.onrender.com/buscar_ciudad?nombre=${cityName}`);
+        // Consulta a tu servidor que usa TimeZoneDB en lugar de GeoNames
+        const response = await fetch(`/buscar_ciudad?nombre=${cityName}`);
         const data = await response.json();
 
         let resultsContainer = document.getElementById("city-results");
