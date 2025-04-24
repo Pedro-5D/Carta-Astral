@@ -1268,8 +1268,17 @@ function createArcPath(startAngle, endAngle) {
 function App() {
     const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
     const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
+    const [city, setCity] = React.useState("");
     const [planets, setPlanets] = React.useState([]);
     const [activeStars, setActiveStars] = React.useState([]);
+    const [results, setResults] = React.useState("");
+    const [error, setError] = React.useState("");
+
+    // Simulación de la función getActiveStars
+    const getActiveStars = (planets, date) => {
+        // Aquí va la lógica para calcular las estrellas activas
+        return planets.filter((planet) => planet.date === date);
+    };
 
     React.useEffect(() => {
         if (planets.length > 0) {
@@ -1277,19 +1286,66 @@ function App() {
         }
     }, [planets, date]);
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!city.trim()) {
+            setError("Por favor, escribe una ciudad.");
+            return;
+        }
+        setError("");
+        setResults(`Buscando información para la ciudad: ${city}, fecha: ${date}, hora: ${time}`);
+        // Simulación de obtención de datos para los planetas
+        setPlanets([
+            { name: "Mercurio", date: date },
+            { name: "Venus", date: date },
+            { name: "Marte", date: date },
+        ]);
+    };
+
     return (
-        <form id="city-form">
-            <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-            <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
-            <button type="submit">Buscar</button>
-        </form>
-        <p id="city-results"></p>
-     );
- }
+        <div>
+            <form id="city-form" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder="Escribe tu ciudad..."
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                />
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                />
+                <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                />
+                <button type="submit">Buscar</button>
+            </form>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {results && <p id="city-results">{results}</p>}
+            {activeStars.length > 0 && (
+                <div>
+                    <h3>Estrellas Activas:</h3>
+                    <ul>
+                        {activeStars.map((star, index) => (
+                            <li key={index}>{star.name}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
     // Manejadores de eventos
     const handleCalculate = () => {
         fetch('https://carta-astral.onrender.com/calculate', {
