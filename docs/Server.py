@@ -12,12 +12,12 @@ import sqlite3
 import csv
 
 # 🔹 **Cargar efemérides correctamente**
-eph_path = Path("./docs/de421.bsp")  # 🔹 Prueba con './docs/' en lugar de 'docs/'
+eph_path = Path("./docs/de421.bsp")  # 🔹 Usa './docs/' en lugar de 'docs/'
 
 if eph_path.exists():
     eph = load(str(eph_path))
 else:
-    raise FileNotFoundError(f"Archivo no encontrado: {eph_path}. Asegúrate de que 'de421.bsp' está en la carpeta 'docs'.")
+    raise FileNotFoundError(f"Archivo no encontrado: {eph_path}. Verifica que 'de421.bsp' esté en la carpeta 'docs'.")
 
 ts = load.timescale()
 
