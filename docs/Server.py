@@ -922,30 +922,36 @@ def calculate_positions(date_str, time_str, lat=None, lon=None):
         print(f"Error calculando posiciones: {str(e)}")
         raise
 
+def es_horario_verano(ciudad, fecha):
+    ts = load.timescale()
+    eph = load('de421.bsp')  # Efemérides planetarias de la NASA
+    sol = eph['sun']
+    
+    fecha_consulta = datetime.strptime(fecha, "%Y-%m-%d")
+    t = ts.utc(fecha_consulta.year, fecha_consulta.month, fecha_consulta.day)
+    
+    # Obtener la posición del Sol en longitud eclíptica
+    _, longitud_solar, _ = sol.ecliptic_position(t)
+
+    # Si el Sol está cerca de 0° Aries (equinoccio de marzo)
+    if 0 <= longitud_solar.degrees < 1:
+        return True  # Comienza el horario de verano en el hemisferio norte
+    
+    # Si el Sol está cerca de 180° Libra (equinoccio de septiembre)
+    if 179 <= longitud_solar.degrees < 181:
+        return True  # Comienza el horario de verano en el hemisferio sur
+    
+    return False  # No es horario de verano
+
 def obtener_zona_horaria(ciudad, fecha):
     resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
     
     if not resultado.empty:
-        zona_horaria = resultado.iloc[-1][2]  # Ajusta el índice según la columna correcta
-        
-        # Convertir la fecha ingresada a un objeto datetime
-        try:
-            fecha_consulta = datetime.strptime(fecha, "%Y-%m-%d")
-        except ValueError:
-            return "Formato de fecha inválido. Usa YYYY-MM-DD."
-        
-        mes = fecha_consulta.month
-        
-        # Definir reglas según el hemisferio
-        if "Europe/" in resultado.iloc[-1][0] or "America/New_York" in resultado.iloc[-1][0]:  # Hemisferio Norte
-            if 3 <= mes <= 10:
-                zona_horaria = "CEST"  # Verano en Europa
-        elif "America/Santiago" in resultado.iloc[-1][0] or "Australia/Sydney" in resultado.iloc[-1][0]:  # Hemisferio Sur
-            if mes in [12, 1, 2, 3]:
-                zona_horaria = "CLST"  # Verano en Chile
-        elif "Australia/Sydney" in resultado.iloc[-1][0]:  # Australia - Verano
-            if mes in [10, 11, 12, 1, 2, 3, 4]:  # De octubre a abril
-                zona_horaria = "AEDT"  # Horario de verano en Australia
+        zona_horaria = resultado.iloc[-1][2]  # Zona horaria base
+
+        if es_horario_verano(ciudad, fecha):
+            zona_horaria = ajustar_horario_verano(ciudad, zona_horaria)  # Función que cambia CET → CEST
+
         return zona_horaria
 
     return "Ciudad no encontrada en la base de datos."
