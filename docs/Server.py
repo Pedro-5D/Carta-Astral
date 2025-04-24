@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS cities (
 )
 """)
 
-with open("timezone.csv", encoding="utf-8") as file:
+with open("docs/timezone.csv", encoding="utf-8") as file:
     reader = csv.reader(file)
     next(reader)  # Saltar encabezado
     for row in reader:
