@@ -15,6 +15,17 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+def buscar_ciudades(nombre_ciudad):
+    url = f"https://api.geonames.org/searchJSON?q={nombre_ciudad}&maxRows=10&username=Pedro728"
+    respuesta = requests.get(url)
+    datos = respuesta.json()
+    return [{"name": ciudad["name"], "country": ciudad["countryName"]} for ciudad in datos.get("geonames", [])]
+
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -1066,6 +1077,17 @@ def calculate():
     except Exception as e:
         print(f"Error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@app.route("/buscar_ciudad", methods=["GET"])
+def obtener_ciudades():
+    nombre_ciudad = request.args.get("nombre", "")
+    if not nombre_ciudad:
+        return jsonify({"error": "Debe proporcionar un nombre de ciudad"}), 400
+    ciudades = buscar_ciudades(nombre_ciudad)
+    return jsonify(ciudades)
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
