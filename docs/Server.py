@@ -12,7 +12,7 @@ import sqlite3
 import csv
 
 # 🔹 **Cargar efemérides correctamente**
-eph_path = Path("./docs/de421.bsp")  # 🔹 Usa './docs/' en lugar de 'docs/'
+eph_path = Path("./de421.bsp")  # 🔹 Prefijo './' para evitar errores en Render
 
 if eph_path.exists():
     eph = load(str(eph_path))
