@@ -9,12 +9,19 @@ import os
 import sqlite3
 import csv
 from zoneinfo import ZoneInfo
+from pathlib import Path
 
-# Cargar efemérides
+# 🔹 **Cargar efemérides correctamente**
+eph_path = Path("docs/de421.bsp")
+
+if eph_path.exists():
+    eph = load(str(eph_path))
+else:
+    raise FileNotFoundError(f"Archivo no encontrado: {eph_path}. Asegúrate de que 'de421.bsp' está en la carpeta 'docs'.")
+
 ts = load.timescale()
-eph = load('docs/de421.bsp')  # Ruta correcta dentro de 'docs'
 
-# Inicializar Flask
+# 🔹 **Inicializar Flask**
 app = Flask(__name__)
 CORS(app)  # Habilitar CORS para permitir conexiones externas
 
@@ -71,11 +78,10 @@ def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         time_obj = datetime.strptime(time_str, "%H:%M").time()
 
-        # **Verificar si la zona horaria es válida antes de aplicarla**
         try:
             dt_local = datetime.combine(date_obj, time_obj).replace(tzinfo=ZoneInfo(timezone_str))
         except Exception:
-            return {"error": f"Zona horaria no válida: {timezone_str}. Verifica el nombre de la zona."}
+            return {"error": f"Zona horaria no válida: {timezone_str}. Verifica el nombre.", "status": 400}
 
         dt_utc = dt_local.astimezone(ZoneInfo("UTC"))
         en_dst = dt_utc.dst() != timedelta(0)
@@ -83,25 +89,7 @@ def convertir_a_ut_zoneinfo(date_str, time_str, timezone_str):
         return dt_utc, en_dst
 
     except ValueError:
-        return {"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'."}
-
-# 🔹 **Ruta para obtener ciudades desde la base de datos**
-@app.route("/buscar_ciudad", methods=["GET"])
-def obtener_ciudades():
-    nombre_ciudad = request.args.get("nombre", "")
-    if not nombre_ciudad:
-        return jsonify({"error": "Debe proporcionar un nombre de ciudad"}), 400
-    
-    ciudades = buscar_ciudad(nombre_ciudad)
-    return jsonify(ciudades)
-
-# 🔹 **Ejecutar servidor en Render**
-if __name__ == "__main__":
-    print("\nIniciando servidor de carta astral con interpretaciones completas...")
-    print("Cargando efemérides, configuración e interpretaciones...")
-    
-    print("\nServidor iniciando en https://software-astrologico.onrender.com")
-    app.run(host="0.0.0.0", port=10000, debug=True)
+        return {"error": f"Formato de fecha inválido: {date_str}. Se esperaba 'YYYY-MM-DD'.", "status": 400}
 
 def init_interpreter():
     global interpreter
@@ -1096,24 +1084,20 @@ def calculate():
         print(f"Error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+# 🔹 **Ruta para obtener ciudades desde la base de datos**
 @app.route("/buscar_ciudad", methods=["GET"])
 def obtener_ciudades():
     nombre_ciudad = request.args.get("nombre", "")
     if not nombre_ciudad:
         return jsonify({"error": "Debe proporcionar un nombre de ciudad"}), 400
-    ciudades = buscar_ciudades(nombre_ciudad)
+    
+    ciudades = buscar_ciudad(nombre_ciudad)
     return jsonify(ciudades)
 
-if __name__ == '__main__':
+# 🔹 **Ejecutar servidor en Render**
+if __name__ == "__main__":
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
     print("Cargando efemérides, configuración e interpretaciones...")
-    
-    # Inicializar el intérprete al arrancar el servidor
-    init_interpreter()
-    
-    print("\nCiudades disponibles:")
-    for city_key, city_data in CITIES_DB.items():
-        print(f"- {city_data['name']}")
+
     print("\nServidor iniciando en https://software-astrologico.onrender.com")
-    
-    app.run(host='0.0.0.0', port=10000, debug=True)
+    app.run(host="0.0.0.0", port=10000, debug=True)
