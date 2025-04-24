@@ -212,17 +212,6 @@
 <body>
     <div id="root"></div>
     
-    // 🔹 Formulario fuera del script de Babel
-const form = (
-    <div>
-        <form id="city-form">
-            <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-            <button type="submit">Buscar</button>
-        </form>
-        <p id="city-results"></p>
-    </div>
-);
-
 const DIMENSIONS = {
     centerX: 300,
     centerY: 300,
@@ -1277,38 +1266,23 @@ function createArcPath(startAngle, endAngle) {
 }
 
 function App() {
-    // Estados
-    const [cities, setCities] = React.useState([]);
-    const [selectedCity, setSelectedCity] = React.useState('');
-    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
-    const [time, setTime] = React.useState(new Date().toTimeString().slice(0,5));
-    const [planets, setPlanets] = React.useState([]);
-    const [aspects, setAspects] = React.useState([]);
-    const [error, setError] = React.useState('');
-    const [selectedAspect, setSelectedAspect] = React.useState(null);
-    const [selectedPlanet, setSelectedPlanet] = React.useState(null);
-    const [activeStars, setActiveStars] = React.useState([]);
-    const [dignityTable, setDignityTable] = React.useState(null);
-    const [birthType, setBirthType] = React.useState(null);
-    const [triplicityTable, setTriplicityTable] = React.useState(null);
-    // Nuevo estado para interpretaciones
-    const [interpretations, setInterpretations] = React.useState({
-        planets_in_signs: [],
-        planets_in_houses: [],
-        aspects: [],
-        house_rulers: []
-    });
+        const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
+        const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
 
-    React.useEffect(() => {
-        fetch('https://software-astrologico.onrender.com/cities')
-            .then(response => response.json())
-            .then(data => {
-                setCities(data);
-                if(data.length > 0) setSelectedCity(data[0].value);
-            })
-            .catch(err => setError('Error cargando ciudades'));
-    }, []);
+        return (
+            <div>
+                <form id="city-form">
+                    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+                    <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                    <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+                    <button type="submit">Buscar</button>
+                </form>
+                <p id="city-results"></p>
+            </div>
+        );
+    }
 
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
     React.useEffect(() => {
         if (planets.length > 0) {
             setActiveStars(getActiveStars(planets, date));
