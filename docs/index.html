@@ -213,6 +213,13 @@
     <div id="root"></div>
     <script type="text/babel">
 
+    <!-- 🔹 Formulario fuera del script de Babel -->
+    <form id="city-form">
+        <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+        <button type="submit">Buscar</button>
+    </form>
+    <p id="city-results"></p>
+
 const DIMENSIONS = {
     centerX: 300,
     centerY: 300,
@@ -220,12 +227,6 @@ const DIMENSIONS = {
     innerRadius: 110,
     glyphRadius: 235
 };
-
-<form id="city-form">
-    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-    <button type="submit">Buscar</button>
-</form>
-<p id="city-results"></p>
 
 const SIGNS = [
     {name: 'ARIES', start: 354, length: 36, symbol: '♈', color: '#FFE5E5'},
