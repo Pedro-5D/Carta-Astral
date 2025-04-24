@@ -930,8 +930,8 @@ def es_horario_verano(ciudad, fecha):
     fecha_consulta = datetime.strptime(fecha, "%Y-%m-%d")
     t = ts.utc(fecha_consulta.year, fecha_consulta.month, fecha_consulta.day)
     
-    # Obtener la posición del Sol en longitud eclíptica
-    _, longitud_solar, _ = sol.ecliptic_position(t)
+    # Obtener la posición eclíptica del Sol
+    longitud_solar, _ = sol.at(t).apparent_ecliptic_lonlat()
 
     # Si el Sol está cerca de 0° Aries (equinoccio de marzo)
     if 0 <= longitud_solar.degrees < 1:
@@ -942,6 +942,7 @@ def es_horario_verano(ciudad, fecha):
         return True  # Comienza el horario de verano en el hemisferio sur
     
     return False  # No es horario de verano
+
 
 def obtener_zona_horaria(ciudad, fecha):
     resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
