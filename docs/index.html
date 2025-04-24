@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carta Astral</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
+<style>
         body { 
             margin: 0; 
             padding: 20px; 
@@ -1265,28 +1265,32 @@ function createArcPath(startAngle, endAngle) {
     return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
 }
 
-function App() {
-    const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
-    const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
+        function App() {
+            const [date, setDate] = React.useState(new Date().toISOString().split('T')[0]);
+            const [time, setTime] = React.useState(new Date().toTimeString().slice(0, 5));
+            const [planets, setPlanets] = React.useState([]);
+            const [activeStars, setActiveStars] = React.useState([]);
 
-    React.useEffect(() => {
-        if (planets.length > 0) {
-            setActiveStars(getActiveStars(planets, date));
+            React.useEffect(() => {
+                if (planets.length > 0) {
+                    setActiveStars(getActiveStars(planets, date));
+                }
+            }, [planets, date]);
+
+            return (
+                <>
+                    <form id="city-form">
+                        <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
+                        <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                        <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
+                        <button type="submit">Buscar</button>
+                    </form>
+                    <p id="city-results"></p>
+                </>
+            );
         }
-    }, [planets, date]); // 🔹 Ahora está dentro del componente
 
-    return (
-        <>
-            <form id="city-form">
-                <input type="text" id="city" name="city" placeholder="Escribe tu ciudad..." />
-                <input type="date" id="date" name="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                <input type="time" id="time" name="time" value={time} onChange={(e) => setTime(e.target.value)} />
-                <button type="submit">Buscar</button>
-            </form>
-            <p id="city-results"></p>
-        </>
-    );
-}
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
     // Manejadores de eventos
     const handleCalculate = () => {
