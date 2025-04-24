@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from datetime import datetime, timezone, timedelta
@@ -16,6 +17,21 @@ from pathlib import Path
 
 app = Flask(__name__)
 CORS(app)
+# 🔹 Cargar datos de ciudades y coordenadas
+def cargar_ciudades():
+    datos = []
+    with open("docs/allCountries.jsonl", "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            datos.append(json.loads(linea))  
+    return datos
+# 🔹 Cargar datos de husos horarios desde CSV
+def cargar_husos_horarios():
+    df = pd.read_csv("docs/time_zone.csv")
+    return df.set_index("country_code").to_dict(orient="index")
+
+husos_horarios = cargar_husos_horarios()
+
+ciudades = cargar_ciudades()
 # Cargar el archivo de zonas horarias
 df = pd.read_csv("time_zone.csv")
 
@@ -1132,6 +1148,25 @@ def zona_horaria():
     
     zona_horaria = obtener_zona_horaria(ciudad, fecha)  # Ahora enviamos ambos parámetros
     return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
+
+# 🔹 Endpoint para obtener coordenadas y huso horario
+@app.route("/coordenadas", methods=["GET"])
+def obtener_coordenadas():
+    ciudad = request.args.get("ciudad")  
+    for registro in ciudades:
+        if registro["name"].lower() == ciudad.lower():
+            country_code = registro["country_code"]
+            huso = husos_horarios.get(country_code, {}).get("timezone", "No disponible")
+
+            return jsonify({
+                "name": registro["name"],
+                "latitude": registro["latitude"],
+                "longitude": registro["longitude"],
+                "country_code": country_code,
+                "timezone": huso
+            })
+    
+    return jsonify({"error": "Ciudad no encontrada"}), 404  
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
