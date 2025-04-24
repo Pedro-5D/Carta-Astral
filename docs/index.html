@@ -221,6 +221,13 @@ const DIMENSIONS = {
     glyphRadius: 235
 };
 
+<form id="city-form">
+    <label for="city">Selecciona tu ciudad:</label>
+    <input type="text" id="city" name="city" placeholder="Escribe tu ciudad...">
+    <button type="submit">Buscar</button>
+</form>
+<p id="city-results"></p>
+
 const SIGNS = [
     {name: 'ARIES', start: 354, length: 36, symbol: '♈', color: '#FFE5E5'},
     {name: 'TAURUS', start: 30, length: 30, symbol: '♉', color: '#E5FFE5'},
@@ -1827,6 +1834,39 @@ document.addEventListener("click", function(event) {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+</script>
+<script>
+document.getElementById("city-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    
+    const cityName = document.getElementById("city").value;
+    if (!cityName) {
+        alert("Por favor, ingresa una ciudad.");
+        return;
+    }
+
+    try {
+        // Solicitud a GeoNames
+        const response = await fetch(`https://api.geonames.org/searchJSON?q=${cityName}&maxRows=10&username=Pedro728`);
+        const data = await response.json();
+        
+        let resultsContainer = document.getElementById("city-results");
+        resultsContainer.innerHTML = "";  // Limpia resultados previos
+
+        if (data.geonames.length === 0) {
+            resultsContainer.innerHTML = "No se encontraron ciudades.";
+        } else {
+            // Mostrar resultados
+            data.geonames.forEach(city => {
+                let cityElement = document.createElement("p");
+                cityElement.textContent = `${city.name}, ${city.countryName}`;
+                resultsContainer.appendChild(cityElement);
+            });
+        }
+    } catch (error) {
+        console.error("Error al buscar ciudades:", error);
+    }
+});
 </script>
 </body>
 </html>
