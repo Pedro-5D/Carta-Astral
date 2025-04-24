@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS cities (
 """)
 
 # **Solo cargar el CSV si la tabla está vacía**
-timezone_path = Path("./timezone.csv")  # 🔹 Usa './' para asegurar que Render lo encuentre
+timezone_path = Path("./time_zone.csv")  # 🔹 Usa './' para asegurar que Render lo encuentre
 
 if timezone_path.exists():
     with open(str(timezone_path), encoding="utf-8") as file:
