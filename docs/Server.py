@@ -1185,8 +1185,24 @@ def obtener_coordenadas():
     if not ciudad or not fecha or not hora:
         return jsonify({"error": "Debes proporcionar ciudad, fecha y hora."}), 400
 
-    datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
+import requests
+
+API_KEY = "TU_API_KEY_AQUI"  # Usa tu clave de Geoapify
+
+def obtener_datos_ciudad(ciudad):
+    url = f"https://api.geoapify.com/v1/geocode/search?text={ciudad}&apiKey={API_KEY}"
+    response = requests.get(url)
+    return response.json() if response.status_code == 200 else {"error": "Error en la consulta"}
+
+@app.route("/coordenadas")
+def obtener_coordenadas():
+    ciudad = request.args.get("ciudad")
+    if not ciudad:
+        return jsonify({"error": "Debes proporcionar una ciudad."}), 400
+    
+    datos_ciudad = obtener_datos_ciudad(ciudad)
     return jsonify(datos_ciudad)
+
 
 from flask import Flask, send_file
 
@@ -1200,8 +1216,6 @@ if __name__ == '__main__':
     # Inicializar el intérprete al arrancar el servidor
     init_interpreter()
     
-    print("\nCiudades disponibles:")
-    for city_key, city_data in CITIES_DB.items():
-        print(f"- {city_data['name']}")
-    print("\nServidor iniciando en https://carta-astral.onrender.com")
+    print("\nCiudades disponibles desde API...")
+    print("\nServidor listo. Accediendo a API de ciudades...")
     app.run(host='0.0.0.0', port=10000, debug=True)
