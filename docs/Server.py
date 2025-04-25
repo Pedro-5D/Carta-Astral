@@ -1192,6 +1192,16 @@ from flask import Flask, send_file
 
 app = Flask(__name__, static_folder="docs")
 
+@app.after_request
+def add_headers(response):
+    response.headers["X-Frame-Options"] = "ALLOWALL"
+    response.headers["Content-Security-Policy"] = "frame-ancestors *"
+    return response
+
+@app.route('/')
+def home():
+    return "Servidor funcionando correctamente"
+
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
