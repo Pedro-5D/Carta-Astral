@@ -1160,7 +1160,7 @@ def zona_horaria():
 def obtener_coordenadas():
     ciudad = request.args.get("ciudad")  
     for registro in ciudades:
-        if ciudad.lower() in registro["name"].lower():
+        if ciudad.lower() in registro["name"].lower() or ciudad.lower() in registro["alternate_names"].lower():
             country_code = registro["country_code"]
             huso = husos_horarios.get(country_code, {}).get("timezone", "No disponible")
 
