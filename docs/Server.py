@@ -1174,9 +1174,17 @@ def zona_horaria():
     return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
 
 # 🔹 Endpoint para obtener coordenadas y huso horario
+from flask import request, jsonify
+
 @app.route("/coordenadas")
 def obtener_coordenadas():
     ciudad = request.args.get("ciudad")
+    fecha = request.args.get("fecha")  # Captura fecha desde la solicitud
+    hora = request.args.get("hora")    # Captura hora desde la solicitud
+    
+    if not ciudad or not fecha or not hora:
+        return jsonify({"error": "Debes proporcionar ciudad, fecha y hora."}), 400
+
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
