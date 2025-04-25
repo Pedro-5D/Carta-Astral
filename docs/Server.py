@@ -1188,6 +1188,14 @@ def obtener_coordenadas():
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
+from flask import Flask, send_file
+
+app = Flask(__name__, static_folder="docs")
+
+@app.route("/")
+def serve_index():
+    return send_file("docs/index.html")
+
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
