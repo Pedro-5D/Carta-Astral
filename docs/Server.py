@@ -20,14 +20,16 @@ CORS(app)
 # 🔹 Cargar datos de ciudades y coordenadas
 import requests
 
+API_KEY = "e19afa2a9d6643ea9550aab89eefce0b"
+
 def obtener_datos_ciudad(ciudad):
-    url = f"https://api.geonames.org/searchJSON?q={ciudad}&maxRows=1&username=Pedro728"
-    response = requests.get(url, verify=False)
+    url = f"https://api.geoapify.com/v1/geocode/search?text={ciudad}&apiKey={API_KEY}"
+    response = requests.get(url)
 
     if response.status_code == 200:
         datos = response.json()
-        if datos["totalResultsCount"] > 0:
-            return datos["geonames"][0]  # Devuelve la primera coincidencia
+        if datos.get("features"):
+            return datos["features"][0]["properties"]  # Extrae los datos principales
         else:
             return {"error": "Ciudad no encontrada"}
     else:
