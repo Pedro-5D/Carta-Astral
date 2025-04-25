@@ -1179,30 +1179,14 @@ from flask import request, jsonify
 @app.route("/coordenadas")
 def obtener_coordenadas():
     ciudad = request.args.get("ciudad")
-    fecha = request.args.get("fecha")  # Captura fecha desde la solicitud
-    hora = request.args.get("hora")    # Captura hora desde la solicitud
-    
+    fecha = request.args.get("fecha")
+    hora = request.args.get("hora")
+ 
     if not ciudad or not fecha or not hora:
         return jsonify({"error": "Debes proporcionar ciudad, fecha y hora."}), 400
-
-import requests
-
-API_KEY = "TU_API_KEY_AQUI"  # Usa tu clave de Geoapify
-
-def obtener_datos_ciudad(ciudad):
-    url = f"https://api.geoapify.com/v1/geocode/search?text={ciudad}&apiKey={API_KEY}"
-    response = requests.get(url)
-    return response.json() if response.status_code == 200 else {"error": "Error en la consulta"}
-
-@app.route("/coordenadas")
-def obtener_coordenadas():
-    ciudad = request.args.get("ciudad")
-    if not ciudad:
-        return jsonify({"error": "Debes proporcionar una ciudad."}), 400
-    
+ 
     datos_ciudad = obtener_datos_ciudad(ciudad)
     return jsonify(datos_ciudad)
-
 
 from flask import Flask, send_file
 
