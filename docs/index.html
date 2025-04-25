@@ -1290,7 +1290,7 @@ function App() {
     });
 
     React.useEffect(() => {
-        fetch('https://software-astrologico.onrender.com/cities')
+        fetch('https://carta-astral.onrender.com/cities')
             .then(response => response.json())
             .then(data => {
                 setCities(data);
@@ -1307,7 +1307,14 @@ function App() {
 
     // Manejadores de eventos
     const handleCalculate = () => {
-        fetch('https://software-astrologico.onrender.com/calculate', {
+        if (!selectedCity || !date || !time) {
+            setError("Debes ingresar ciudad, fecha y hora.");
+            return;
+        }
+
+        const apiUrl = `https://carta-astral.onrender.com/calculate`;
+
+        fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1318,37 +1325,19 @@ function App() {
                 time: time
             })
         })
-
         .then(response => response.json())
         .then(data => {
             if (data.error) throw new Error(data.error);
-            
-            const asc = data.positions.find(p => p.name === 'ASC');
-            
-            const planetsWithHouses = data.positions.map(planet => ({
-                ...planet,
-                house: asc ? determineHouse(planet.longitude, asc.longitude) : null
-            }));
-            
-            setPlanets(planetsWithHouses);
-            setAspects(calculateAspects(planetsWithHouses));
-            
-            if (data.dignity_table) {
-                setDignityTable(data.dignity_table);
-            }
-            
-            if (data.houses_analysis) {
-                setTriplicityTable(data.houses_analysis.houses);
-                setBirthType(data.houses_analysis.birth_type);
-            }
 
-            if (data.interpretations) {
-                setInterpretations(data.interpretations);
-            }
+            document.getElementById("location").innerHTML = `<b>Ciudad:</b> ${selectedCity}`;
+            document.getElementById("timezone").innerHTML = `<b>Huso horario:</b> ${data.timezone?.name} (${data.timezone?.abbreviation_DST})`;
+            document.getElementById("coordinates").innerHTML = `<b>Coordenadas:</b> Lat ${data.lat}, Lon ${data.lon}`;
+
+            setError("");
         })
         .catch(err => {
             console.error('Error:', err);
-            setError(err.message);
+            setError(`Error en la consulta: ${err.message}`);
         });
     };
 
@@ -1371,31 +1360,56 @@ function App() {
         }
 
         // ✅ Si es un archivo local, enviarlo al servidor para procesarlo
-        window.location.href = `https://software-astrologico.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
+        window.location.href = `https://carta-astral.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
     }
 };
 
 	// Renderizado
     return (
         <div>
-            <div className="controls">
-                <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)}>
-                    <option value="">Selecciona una ciudad</option>
-                    {cities.map(city => (
-                        <option key={city.value} value={city.value}>{city.name}</option>
-                    ))}
-                </select>
-                <input 
-                    type="date" 
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                />
-                <input 
-                    type="time" 
-                    value={time}
-                    onChange={e => setTime(e.target.value)}
-                />
-                <button onClick={handleCalculate}>Calcular</button>
+            <div class="controls">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
+
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" />
+
+                <label for="hora">Hora:</label>
+                <input type="time" id="hora" step="60" /> <!-- Se acepta minutos -->
+
+                <button id="buscar">Buscar coordenadas</button>
+            </div>
+
+	    #results {
+                margin-top: 20px;
+                padding: 15px;
+                border: 1px solid #ccc;
+                background-color: #f9f9f9;
+                border-radius: 8px;
+                text-align: left;
+                width: 80%;
+                max-width: 600px;
+            }
+
+            #results h3 {
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+            #results div {
+                font-size: 16px;
+                margin-bottom: 5px;
+                padding: 5px;
+                background-color: #fff;
+                border-radius: 5px;
+            }
+
+            <div id="results">
+                <h3>Resultados:</h3>
+                <div id="location"></div>
+                <div id="timezone"></div>
+                <div id="coordinates"></div>
             </div>
 
             {error && <div style={{color: 'red'}}>{error}</div>}
