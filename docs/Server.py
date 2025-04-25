@@ -18,14 +18,21 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 # 🔹 Cargar datos de ciudades y coordenadas
-def cargar_ciudades():
-    datos = []
-    with open("./allCountries.jsonl", "r", encoding="utf-8") as archivo:
-        for linea in archivo:
-            datos.append(json.loads(linea))  
-    return datos
+import requests
 
-ciudades = cargar_ciudades()
+def obtener_datos_ciudad(ciudad):
+    url = f"https://api.geonames.org/searchJSON?q={ciudad}&maxRows=1&username=Pedro728"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        datos = response.json()
+        if datos["totalResultsCount"] > 0:
+            return datos["geonames"][0]  # Devuelve la primera coincidencia
+        else:
+            return {"error": "Ciudad no encontrada"}
+    else:
+        return {"error": f"Error en la consulta: {response.status_code}"}
+
 # 🔹 Cargar datos de husos horarios desde CSV
 def cargar_husos_horarios():
     columnas = ["timezone", "country_code", "abbreviation", "timestamp", "utc_offset", "dst"]  # Agregar nombres de columna
@@ -1156,23 +1163,11 @@ def zona_horaria():
     return jsonify({"ciudad": ciudad, "zona_horaria": zona_horaria})
 
 # 🔹 Endpoint para obtener coordenadas y huso horario
-@app.route("/coordenadas", methods=["GET"])
+@app.route("/coordenadas")
 def obtener_coordenadas():
-    ciudad = request.args.get("ciudad")  
-    for registro in ciudades:
-        if ciudad.lower() in registro["name"].lower() or ciudad.lower() in registro["alternate_names"].lower():
-            country_code = registro["country_code"]
-            huso = husos_horarios.get(country_code, {}).get("timezone", "No disponible")
-
-            return jsonify({
-                "name": registro["name"],
-                "latitude": registro["latitude"],
-                "longitude": registro["longitude"],
-                "country_code": country_code,
-                "timezone": huso
-            })
-    
-    return jsonify({"error": "Ciudad no encontrada"}), 404  
+    ciudad = request.args.get("ciudad")
+    datos_ciudad = obtener_datos_ciudad(ciudad)
+    return jsonify(datos_ciudad)
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
