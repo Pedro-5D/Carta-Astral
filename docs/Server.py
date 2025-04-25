@@ -29,11 +29,21 @@ def obtener_datos_ciudad(ciudad):
     if response.status_code == 200:
         datos = response.json()
         if datos.get("features"):
-            return datos["features"][0]["properties"]  # Extrae los datos principales
+            opciones = [
+                {
+                    "nombre": resultado["properties"]["formatted"],
+                    "lat": resultado["properties"]["lat"],
+                    "lon": resultado["properties"]["lon"],
+                    "pais": resultado["properties"]["country"]
+                }
+                for resultado in datos["features"]
+            ]
+            return opciones  # Devuelve todas las opciones
         else:
             return {"error": "Ciudad no encontrada"}
     else:
         return {"error": f"Error en la consulta: {response.status_code}"}
+
 
 # 🔹 Cargar datos de husos horarios desde CSV
 def cargar_husos_horarios():
