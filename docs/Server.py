@@ -1194,7 +1194,7 @@ app = Flask(__name__, static_folder="docs")
 
 @app.route("/")
 def serve_index():
-    return send_file("docs/index.html")
+    return send_file("./index.html")
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
