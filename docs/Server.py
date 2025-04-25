@@ -1177,7 +1177,7 @@ def zona_horaria():
 @app.route("/coordenadas")
 def obtener_coordenadas():
     ciudad = request.args.get("ciudad")
-    datos_ciudad = obtener_datos_ciudad(ciudad)
+    datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
 # Esto ya estaba en tu código, no lo cambies
