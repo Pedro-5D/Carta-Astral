@@ -43,9 +43,6 @@ def cargar_husos_horarios():
 
 husos_horarios = cargar_husos_horarios()
 
-
-ciudades = cargar_ciudades()
-# Cargar el archivo de zonas horarias
 df = pd.read_csv("time_zone.csv")
 
 from datetime import datetime, timedelta
