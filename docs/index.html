@@ -1290,7 +1290,7 @@ function App() {
     });
 
     React.useEffect(() => {
-        fetch('https://carta-astral.onrender.com/cities')
+        fetch('https://srv801859.izarren.top/cities')
             .then(response => response.json())
             .then(data => {
                 setCities(data);
@@ -1312,7 +1312,7 @@ function App() {
             return;
         }
 
-        const apiUrl = `https://carta-astral.onrender.com/calculate`;
+        const apiUrl = `https://srv801859.izarren.top/calculate`;
 
         fetch(apiUrl, {
             method: 'POST',
