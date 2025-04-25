@@ -22,7 +22,7 @@ import requests
 
 def obtener_datos_ciudad(ciudad):
     url = f"https://api.geonames.org/searchJSON?q={ciudad}&maxRows=1&username=Pedro728"
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
 
     if response.status_code == 200:
         datos = response.json()
