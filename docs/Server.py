@@ -1190,7 +1190,7 @@ def obtener_coordenadas():
 
 from flask import Flask, send_file
 
-app = Flask(__name__, static_folder="docs")
+app = Flask(__name__, static_folder=".")
 
 @app.route("/")
 def serve_index():
