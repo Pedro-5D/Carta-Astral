@@ -19,10 +19,11 @@ app = Flask(__name__)
 CORS(app)
 # 🔹 Cargar datos de ciudades y coordenadas
 import requests
+from datetime import datetime
 
 API_KEY = "e19afa2a9d6643ea9550aab89eefce0b"
 
-def obtener_datos_ciudad(ciudad):
+def obtener_datos_ciudad(ciudad, fecha, hora):
     url = f"https://api.geoapify.com/v1/geocode/search?text={ciudad}&apiKey={API_KEY}"
     response = requests.get(url)
 
@@ -34,16 +35,17 @@ def obtener_datos_ciudad(ciudad):
                     "nombre": resultado["properties"]["formatted"],
                     "lat": resultado["properties"]["lat"],
                     "lon": resultado["properties"]["lon"],
-                    "pais": resultado["properties"]["country"]
+                    "pais": resultado["properties"]["country"],
+                    "fecha": fecha,
+                    "hora": hora
                 }
                 for resultado in datos["features"]
             ]
-            return opciones  # Devuelve todas las opciones
+            return opciones
         else:
             return {"error": "Ciudad no encontrada"}
     else:
         return {"error": f"Error en la consulta: {response.status_code}"}
-
 
 # 🔹 Cargar datos de husos horarios desde CSV
 def cargar_husos_horarios():
