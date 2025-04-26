@@ -11,5 +11,6 @@
       "src": "/(.*)",
       "dest": "docs/server.py"
     }
-  ]
+  ],
+  "installCommand": "pip install -r docs/requirements.txt"
 }
