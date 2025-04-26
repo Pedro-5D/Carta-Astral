@@ -1039,12 +1039,11 @@ from flask_cors import cross_origin
 @cross_origin(origins="*")
 def get_cities():
     try:
-        cities_list = [
-            {"name": city_data["name"], "value": key}
-            for key, city_data in CITIES_DB.items()
-        ]
-        return jsonify(cities_list)
-    except Exception as e:
+        api_url = "https://api.geoapify.com/v1/geocode/search?text=Bilbao&apiKey=e19afa2a9d6643ea9550aab89eefce0b"
+        response = requests.get(api_url)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route('/calculate', methods=['POST'])
