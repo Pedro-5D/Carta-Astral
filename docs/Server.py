@@ -14,6 +14,9 @@ ts = load.timescale()
 from skyfield.api import load
 eph = load('de421.bsp')  # Carga las efemérides
 from pathlib import Path
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app, origins=["http://168.231.105.186"])  # Permitir desde la web
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"]}})# 🔹 Cargar datos de ciudades y coordenadas
