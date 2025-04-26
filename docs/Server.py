@@ -1146,6 +1146,10 @@ def obtener_coordenadas():
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
+@app.route("/cities", methods=["GET"])
+def obtener_ciudades():
+    # Código para devolver las ciudades
+
 from flask import Flask, send_file
 
 app = Flask(__name__, static_folder="docs")
