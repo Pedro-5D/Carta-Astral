@@ -1179,5 +1179,5 @@ if datos_ciudades:
     for ciudad in datos_ciudades.get("features", []):  # Ajustando el formato de respuesta de la API
         print(f"- {ciudad['properties']['name']}")
 
-print("\Iniciando Carta Astral")
+print("Iniciando Carta Astral")
 app.run(host="0.0.0.0", port=10100, ssl_context=("cert.pem", "key.pem"))
