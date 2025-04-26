@@ -999,17 +999,6 @@ def open_file():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@app.route('/cities', methods=['GET'])
-def get_cities():
-    try:
-        cities_list = [
-            {"name": city_data["name"], "value": key}
-            for key, city_data in CITIES_DB.items()
-        ]
-        return jsonify(cities_list)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
@@ -1021,10 +1010,13 @@ def calculate():
         if not data or not data.get('city'):
             return jsonify({"error": "Ciudad no especificada"}), 400
             
-        city_data = CITIES_DB.get(data['city'].lower())
-        positions = calculate_positions(
-            data['date'],
-            data['time'],
+        # Obtener datos de la ciudad desde la API externa
+        city_data = obtener_datos_ciudad(data['city'].lower(), data['date'], data['time'])
+
+        if not city_data or "error" in city_data:
+            return jsonify({"error": "No se pudo obtener información de la ciudad"}), 404            data['date'],
+            
+	    data['time'],
             city_data["lat"],
             city_data["lon"]
         )
@@ -1167,7 +1159,12 @@ if __name__ == '__main__':
     init_interpreter()
     
     print("\nCiudades disponibles:")
-    for city_key, city_data in CITIES_DB.items():
-        print(f"- {city_data['name']}")
-    print("\nServidor iniciando en https://carta-astral.onrender.com")
-    app.run(host='0.0.0.0', port=10100, debug=True)
+
+datos_ciudades = obtener_datos_ciudad("", "", "")  # Llamada a la API sin filtros específicos
+
+if datos_ciudades:
+    for ciudad in datos_ciudades.get("features", []):  # Ajustando el formato de respuesta de la API
+        print(f"- {ciudad['properties']['name']}")
+
+print("\Iniciando Carta Astral")
+app.run(host='0.0.0.0', port=10100, debug=True)
