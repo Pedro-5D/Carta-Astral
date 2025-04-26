@@ -226,40 +226,6 @@ class AstrologicalInterpreter:
         except Exception as e:
             print(f"Error inesperado cargando efemérides: {e}")
 
-CITIES_DB = {
-    "bilbao": {"name": "Bilbao", "lat": 43.2630, "lon": -2.9350, "timezone": "Europe/Madrid"},
-    "madrid": {"name": "Madrid", "lat": 40.4168, "lon": -3.7038, "timezone": "Europe/Madrid"},
-    "barcelona": {"name": "Barcelona", "lat": 41.3851, "lon": 2.1734, "timezone": "Europe/Madrid"},
-    "valencia": {"name": "Valencia", "lat": 39.4699, "lon": -0.3763, "timezone": "Europe/Madrid"},
-    # Ciudades de Rusia
-    "moscu": {"name": "Moscú", "lat": 55.7558, "lon": 37.6173, "timezone": "Europe/Moscow"},
-    "san_petersburgo": {"name": "San Petersburgo", "lat": 59.9343, "lon": 30.3351, "timezone": "Europe/Moscow"},
-    # Ciudades de Argentina
-    "buenos_aires": {"name": "Buenos Aires", "lat": -34.6037, "lon": -58.3816, "timezone": "America/Argentina/Buenos_Aires"},
-    "cordoba_arg": {"name": "Córdoba (Argentina)", "lat": -31.4201, "lon": -64.1888, "timezone": "America/Argentina/Cordoba"},
-    "rosario": {"name": "Rosario", "lat": -32.9468, "lon": -60.6393, "timezone": "America/Argentina/Cordoba"},
-    "mendoza": {"name": "Mendoza", "lat": -32.8908, "lon": -68.8272, "timezone": "America/Argentina/Mendoza"},
-    "mar_del_plata": {"name": "Mar del Plata", "lat": -38.0023, "lon": -57.5575, "timezone": "America/Argentina/Buenos_Aires"},
-    "san_carlos_bariloche": {"name": "San Carlos de Bariloche", "lat": -41.1335, "lon": -71.3109, "timezone": "America/Argentina/Salta"},
-    "salta": {"name": "Salta", "lat": -24.7859, "lon": -65.4117, "timezone": "America/Argentina/Salta"},
-    "ushuaia": {"name": "Ushuaia", "lat": -54.8019, "lon": -68.3030, "timezone": "America/Argentina/Ushuaia"},
-    # Ciudades españolas adicionales
-    "cordoba_esp": {"name": "Córdoba (España)", "lat": 37.8882, "lon": -4.7794, "timezone": "Europe/Madrid"},
-    # Otras ciudades de América Latina
-    "mexico_df": {"name": "Ciudad de México", "lat": 19.4326, "lon": -99.1332, "timezone": "America/Mexico_City"},
-    "lima": {"name": "Lima", "lat": -12.0464, "lon": -77.0428, "timezone": "America/Lima"},
-    "bogota": {"name": "Bogotá", "lat": 4.7110, "lon": -74.0721, "timezone": "America/Bogota"},
-    "santiago": {"name": "Santiago de Chile", "lat": -33.4489, "lon": -70.6693, "timezone": "America/Santiago"},
-    "caracas": {"name": "Caracas", "lat": 10.4806, "lon": -66.9036, "timezone": "America/Caracas"},
-    "la_habana": {"name": "La Habana", "lat": 23.1136, "lon": -82.3666, "timezone": "America/Havana"},
-    # Otras ciudades mundiales relevantes
-    "nueva_york": {"name": "Nueva York", "lat": 40.7128, "lon": -74.0060, "timezone": "America/New_York"},
-    "paris": {"name": "París", "lat": 48.8566, "lon": 2.3522, "timezone": "Europe/Paris"},
-    "londres": {"name": "Londres", "lat": 51.5074, "lon": -0.1278, "timezone": "Europe/London"},
-    "roma": {"name": "Roma", "lat": 41.9028, "lon": 12.4964, "timezone": "Europe/Rome"},
-    "tokio": {"name": "Tokio", "lat": 35.6762, "lon": 139.6503, "timezone": "Asia/Tokyo"}
-}
-
 SIGNS_BY_ELEMENT = {
     "AIRE": ["GÉMINIS", "ACUARIO", "OFIUCO", "LIBRA"],
     "TIERRA": ["TAURO", "CAPRICORNIO", "VIRGO"],
