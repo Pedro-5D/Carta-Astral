@@ -1214,4 +1214,4 @@ if __name__ == '__main__':
     
     print("\nCiudades disponibles desde API...")
     print("\nServidor listo. Accediendo a API de ciudades...")
-    app.run(host='0.0.0.0', port=10000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
