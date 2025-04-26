@@ -1014,9 +1014,10 @@ def calculate():
         city_data = obtener_datos_ciudad(data['city'].lower(), data['date'], data['time'])
 
         if not city_data or "error" in city_data:
-            return jsonify({"error": "No se pudo obtener información de la ciudad"}), 404            data['date'],
-            
-	    data['time'],
+            return jsonify({"error": "No se pudo obtener información de la ciudad"}), 404            
+
+	    data['date'],
+            data['time'],
             city_data["lat"],
             city_data["lon"]
         )
