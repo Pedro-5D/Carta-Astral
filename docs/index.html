@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Carta Astral</title>
-    <link rel="stylesheet" href="/docs/style.css">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -14,7 +13,69 @@
             background: #f5f5f5;
             font-family: Arial, sans-serif;
         }
-        .wheel-container { 
+        /* Estilo del formulario */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        select, input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #fff;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Botón de envío */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    margin-top: 15px;
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Mensaje de error */
+#error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Ajuste del contenedor principal */
+.controls {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+	.wheel-container { 
             width: 800px; 
             height: 800px; 
             margin: 0 auto;
