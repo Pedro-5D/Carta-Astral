@@ -1150,8 +1150,6 @@ def obtener_coordenadas():
 def obtener_ciudades():
     # Código para devolver las ciudades
 
-app = Flask(__name__, static_folder="docs")
-
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
