@@ -1172,6 +1172,8 @@ def add_headers(response):
 def home():
     return "Servidor funcionando correctamente"
 
+app.run(ssl_context=('cert.pem', 'key.pem'), host="0.0.0.0", port=6000)
+
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
