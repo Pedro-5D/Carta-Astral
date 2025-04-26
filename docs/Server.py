@@ -16,8 +16,7 @@ eph = load('de421.bsp')  # Carga las efemérides
 from pathlib import Path
 
 app = Flask(__name__)
-CORS(app)
-# 🔹 Cargar datos de ciudades y coordenadas
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"]}})# 🔹 Cargar datos de ciudades y coordenadas
 import requests
 from datetime import datetime
 
@@ -1034,7 +1033,10 @@ def open_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+from flask_cors import cross_origin
+
 @app.route('/cities', methods=['GET'])
+@cross_origin(origins="*")
 def get_cities():
     try:
         cities_list = [
@@ -1044,7 +1046,7 @@ def get_cities():
         return jsonify(cities_list)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-	    
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
     try:
