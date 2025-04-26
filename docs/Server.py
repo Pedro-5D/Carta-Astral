@@ -1204,4 +1204,4 @@ if __name__ == '__main__':
     for city_key, city_data in CITIES_DB.items():
         print(f"- {city_data['name']}")
     print("\nServidor iniciando en https://carta-astral.onrender.com")
-    app.run(host='0.0.0.0', port=10000, debug=True)
+    app.run(host='0.0.0.0', port=10100, debug=True)
