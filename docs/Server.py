@@ -1148,7 +1148,20 @@ def obtener_coordenadas():
 
 @app.route("/cities", methods=["GET"])
 def obtener_ciudades():
-    # Código para devolver las ciudades
+    ciudad = request.args.get("city", "")
+    fecha = request.args.get("fecha", "")
+    hora = request.args.get("hora", "")
+
+    if not ciudad:
+        return jsonify({"error": "Debes proporcionar una ciudad."}), 400
+
+    # Consultar la API y obtener datos
+    datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
+
+    if "error" in datos_ciudad:
+        return jsonify(datos_ciudad), 404  # Si hay error, devolverlo
+    
+    return jsonify(datos_ciudad)
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
