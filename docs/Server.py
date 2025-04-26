@@ -1034,17 +1034,17 @@ def open_file():
         return jsonify({'error': str(e)}), 500
 
 from flask_cors import cross_origin
+import requests
 
 @app.route('/cities', methods=['GET'])
-@cross_origin(origins="*")
 def get_cities():
-    try:
-        api_url = "https://api.geoapify.com/v1/geocode/search?text=Bilbao&apiKey=e19afa2a9d6643ea9550aab89eefce0b"
-        response = requests.get(api_url)
-        response.raise_for_status()
+    city_name = request.args.get("city", "").lower()
+    api_url = f"https://srv801859.izarren.top/cities?city={city_name}"
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
         return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "Ciudad no encontrada"}), 404
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
