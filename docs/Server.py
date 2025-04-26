@@ -1163,6 +1163,18 @@ def obtener_ciudades():
     
     return jsonify(datos_ciudad)
 
+@app.route('/carta-astral', methods=['GET'])
+def carta_astral():
+    fecha = request.args.get('fecha')
+    hora = request.args.get('hora')
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    
+    # Aquí deberías llamar la función que calcula la carta astral
+    resultado = calcular_carta_astral(fecha, hora, lat, lon)
+    
+    return jsonify(resultado)
+
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
