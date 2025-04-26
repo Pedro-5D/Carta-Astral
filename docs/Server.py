@@ -1020,8 +1020,7 @@ def calculate():
             data['time'],
             city_data["lat"],
             city_data["lon"]
-        )
-        
+               
         aspects = calculate_positions_aspects(positions)
         dignity_table = calculate_dignity_table(positions, aspects)
         
