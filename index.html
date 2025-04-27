@@ -1420,7 +1420,7 @@ function App() {
     }
 };
 
-	// Renderizado
+// Renderizado
 return (
     <div>
         <div className="controls">
@@ -1442,6 +1442,7 @@ return (
             </div>
         </div>
 
+        {/* Rueda astral */}
         <div className="wheel-container">
             <svg viewBox="0 0 600 600">
                 <g>
@@ -1474,11 +1475,12 @@ return (
             </svg>
         </div>
 
+        {/* Contenedor de planetas */}
         <div className="planet-container">
             {/* Otros elementos JSX fuera del SVG */}
         </div>
     </div>
-);
+); // ✅ Cierre correcto del bloque principal
 
                             {/* Círculo interior */}
                             <circle
