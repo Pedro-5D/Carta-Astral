@@ -1420,445 +1420,469 @@ function App() {
     }
 };
 
-return (
-    <div>
-        <div className="controls">
-            <label htmlFor="ciudad">Ciudad:</label>
-            <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
+	// Renderizado
+    return (
+        <div>
+            <div class="controls">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
 
-            <label htmlFor="fecha">Fecha:</label>
-            <input type="date" id="fecha" />
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" />
 
-            <label htmlFor="hora">Hora:</label>
-            <input type="time" id="hora" step="60" />
+                <label for="hora">Hora:</label>
+                <!-- Se acepta minutos -->
+                <input type="time" id="hora" step="60" />
 
-            <button id="buscar">Buscar coordenadas</button>
-        </div>
+                <button id="buscar">Buscar coordenadas</button>
+            </div>
 
-        <div id="results" style={{ marginTop: "20px", padding: "15px", border: "1px solid #ccc", backgroundColor: "#f9f9f9", borderRadius: "8px", textAlign: "left", width: "80%", maxWidth: "600px" }}>
-            <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#333" }}>Resultados:</h3>
-            <div id="location" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
-            <div id="timezone" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
-            <div id="coordinates" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
-        </div>
+	    #results {
+                margin-top: 20px;
+                padding: 15px;
+                border: 1px solid #ccc;
+                background-color: #f9f9f9;
+                border-radius: 8px;
+                text-align: left;
+                width: 80%;
+                max-width: 600px;
+            }
 
-        {error && <div style={{ color: "red" }}>{error}</div>}
-    </div> {/* ✅ Cierre correcto */}
+            #results h3 {
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
 
-    {planets?.length > 0 && (
-        <div className="wheel-container">
-            <svg viewBox="0 0 600 600">
-                {/* Círculo exterior */}
-                <circle
-                    cx={DIMENSIONS.centerX}
-                    cy={DIMENSIONS.centerY}
-                    r={DIMENSIONS.radius}
-                    fill="none"
-                    stroke="#333"
-                    strokeWidth="2"
-                />
+            #results div {
+                font-size: 16px;
+                margin-bottom: 5px;
+                padding: 5px;
+                background-color: #fff;
+                border-radius: 5px;
+            }
 
-                {/* Signos zodiacales */}
-                {SIGNS.map(sign => {
-                    const midAngle = ((sign.start + sign.length / 2 - 90) * Math.PI) / 180;
-                    const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
-                    const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
+            <div id="results">
+                <h3>Resultados:</h3>
+                <div id="location"></div>
+                <div id="timezone"></div>
+                <div id="coordinates"></div>
+            </div>
 
-                    return (
-                        <g key={sign.name}>
-                            <path
-                                d={createArcPath(sign.start, sign.start + sign.length)}
-                                fill={sign.color}
+            {error && <div style={{color: 'red'}}>{error}</div>}
+
+            {planets.length > 0 && (
+                <>
+                    <div className="wheel-container">
+                        <svg viewBox="0 0 600 600">
+                            {/* Círculo exterior */}
+                            <circle
+                                cx={DIMENSIONS.centerX}
+                                cy={DIMENSIONS.centerY}
+                                r={DIMENSIONS.radius}
+                                fill="none"
+                                stroke="#333"
+                                strokeWidth="2"
+                            />
+
+                            {/* Signos zodiacales */}
+                            {SIGNS.map(sign => {
+                                const midAngle = ((sign.start + sign.length/2 - 90) * Math.PI) / 180;
+                                const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
+                                const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
+                                
+                                return (
+                                    <g key={sign.name}>
+                                        <path
+                                            d={createArcPath(sign.start, sign.start + sign.length)}
+                                            fill={sign.color}
+                                            stroke="#333"
+                                            strokeWidth="1"
+                                        />
+                                        <text
+                                            x={glyphX}
+                                            y={glyphY}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            fontSize="20"
+                                        >
+                                            {sign.symbol}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+
+                            {/* Círculo interior */}
+                            <circle
+                                cx={DIMENSIONS.centerX}
+                                cy={DIMENSIONS.centerY}
+                                r={DIMENSIONS.innerRadius}
+                                fill="white"
                                 stroke="#333"
                                 strokeWidth="1"
                             />
-                            <text
-                                x={glyphX}
-                                y={glyphY}
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                                fontSize="20"
-                            >
-                                {sign.symbol}
-                            </text>
-                        </g>
-                    );
-                })}
-            </svg>
-        </div>
-    );
 
-{/* Círculo interior */}
-<circle
-    cx={DIMENSIONS.centerX}
-    cy={DIMENSIONS.centerY}
-    r={DIMENSIONS.innerRadius}
-    fill="#FFFFFF"
-    stroke="#333"
-    strokeWidth="1"
-/>
+                            {/* Aspectos */}
+                            {aspects.map((aspect, index) => {
+                                const planet1 = planets.find(p => p.name === aspect.planet1);
+                                const planet2 = planets.find(p => p.name === aspect.planet2);
+                                
+                                const angle1 = (planet1.longitude - 90) * Math.PI / 180;
+                                const angle2 = (planet2.longitude - 90) * Math.PI / 180;
+                                
+                                const x1 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle1);
+                                const y1 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle1);
+                                const x2 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle2);
+                                const y2 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle2);
+                                
+                                return (
+                                    <line
+                                        key={`aspect-${index}`}
+                                        x1={x1}
+                                        y1={y1}
+                                        x2={x2}
+                                        y2={y2}
+                                        stroke={aspect.color}
+                                        strokeWidth={selectedAspect === aspect || 
+                                            (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) ? "3" : "1"}
+                                        strokeDasharray={aspect.type === 'OPPOSITION' ? "5,5" : "none"}
+                                        className="aspect-line"
+                                        onClick={() => handleAspectClick(aspect)}
+                                    />
+                                );
+                            })}
 
-{/* Aspectos */}
-{aspects?.map((aspect, index) => {
-    const planet1 = planets?.find(p => p.name === aspect.planet1);
-    const planet2 = planets?.find(p => p.name === aspect.planet2);
+                            {/* Estrellas fijas */}
+                            {activeStars.map((star, index) => {
+                                const currentLongitude = getCurrentStarPosition(star, date);
+                                const angle = (currentLongitude - 90) * Math.PI / 180;
+                                const starRadius = (DIMENSIONS.radius + DIMENSIONS.innerRadius) / 1.8;
+                                const x = DIMENSIONS.centerX + starRadius * Math.cos(angle);
+                                const y = DIMENSIONS.centerY + starRadius * Math.sin(angle);
+                                
+                                const conjunctPlanets = findConjunctPlanets(star, planets, date);
+                                
+                                return (
+                                    <g 
+                                        key={`star-${index}`}
+                                        onClick={() => handleStarClick(star)}
+                                        style={{cursor: 'pointer'}}
+                                    >
+                                        <text
+                                            x={x}
+                                            y={y}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            fill="#FFD700"
+                                            stroke="#000"
+                                            strokeWidth="0.5"
+                                            style={{
+                                                fontSize: star.magnitude === 12 ? "16px" : "12px",
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            ★
+                                        </text>
+                                        <title>
+                                            {star.name} - {conjunctPlanets.map(p => 
+                                                `${PLANET_SYMBOLS[p.name]} (${p.diff}°)`
+                                            ).join(', ')}
+                                        </title>
+                                    </g>
+                                );
+                            })}
 
-    if (!planet1 || !planet2) return null; // ✅ Evita errores si no encuentra los planetas
-
-    const angle1 = (planet1.longitude - 90) * Math.PI / 180;
-    const angle2 = (planet2.longitude - 90) * Math.PI / 180;
-
-    const x1 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle1);
-    const y1 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle1);
-    const x2 = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(angle2);
-    const y2 = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(angle2);
-
-    return (
-        <line
-            key={`aspect-${index}`}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke={aspect.color}
-            strokeWidth={selectedAspect === aspect || 
-                (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) ? "3" : "1"}
-            strokeDasharray={aspect.type === 'OPPOSITION' ? "5,5" : "none"}
-            className="aspect-line"
-            onClick={() => handleAspectClick(aspect)}
-        />
-    );
-})}
-
-{/* Estrellas fijas */}
-{activeStars?.map((star, index) => {
-    const currentLongitude = getCurrentStarPosition(star, date);
-    const angle = (currentLongitude - 90) * Math.PI / 180;
-    const starRadius = (DIMENSIONS.radius + DIMENSIONS.innerRadius) / 1.8;
-    const x = DIMENSIONS.centerX + starRadius * Math.cos(angle);
-    const y = DIMENSIONS.centerY + starRadius * Math.sin(angle);
-
-    const conjunctPlanets = findConjunctPlanets(star, planets, date);
-
-    return (
-        <g 
-            key={`star-${index}`}
-            onClick={() => handleStarClick(star)}
-            style={{ cursor: "pointer" }}
-        >
-            <text
-                x={x}
-                y={y}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                fill="#FFD700"
-                stroke="#000"
-                strokeWidth="0.5"
-                style={{
-                    fontSize: star.magnitude === 12 ? "16px" : "12px",
-                    fontWeight: "bold"
-                }}
-            >
-                ★
-            </text>
-            <title>
-                {star.name} - {conjunctPlanets.map(p => 
-                    `${PLANET_SYMBOLS[p.name]} (${p.diff}°)`
-                ).join(", ")}
-            </title>
-        </g>
-    );
-})}
-
-{/* Planetas */}
-{planets?.map((planet) => {
-    const adjustment = adjustPlanetLabel(planet, planets);
-    const adjustedAngle = ((planet.longitude + (adjustment?.angleOffset || 0) - 90) * Math.PI) / 180;
-    const x = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(adjustedAngle);
-    const y = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(adjustedAngle);
-
-    const labelX = DIMENSIONS.centerX + (adjustment?.radius || DIMENSIONS.innerRadius) * Math.cos(adjustedAngle);
-    const labelY = DIMENSIONS.centerY + (adjustment?.radius || DIMENSIONS.innerRadius) * Math.sin(adjustedAngle);
-
-    const isSelected = selectedPlanet === planet.name;
-
-    return (
-        <g 
-            key={planet.name}
-            onClick={() => handlePlanetClick(planet.name)}
-            style={{ cursor: "pointer" }}
-        >
-            <circle
-                cx={x ?? DIMENSIONS.centerX}
-                cy={y ?? DIMENSIONS.centerY}
-                r={isSelected ? "6" : "4"}
-                fill={getPlanetColor(planet.name, planet.longitude)}
-                stroke="#000"
-                strokeWidth={isSelected ? "2" : "1"}
-            />
-            <text
-                x={labelX ?? DIMENSIONS.centerX}
-                y={labelY ?? DIMENSIONS.centerY}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                className="planet-label"
-                style={{
-                    fontSize: isSelected ? "24px" : "20px"
-                }}
-            >
-                {PLANET_SYMBOLS?.[planet.name] || "?"}
-            </text>
-        </g>
-    );
-})}
-
-</svg> {/* ✅ Cerrando correctamente */}
-
-{/* Contenedor de aspectos */}
-<div className="planet-container">
-    <div className="aspects-list">
-        <h3>Aspectos:</h3>
-        {aspects?.map((aspect, index) => (
-            <div 
-                key={`aspect-desc-${index}`} 
-                className="aspect-list-item"
-                style={{
-                    backgroundColor: selectedAspect === aspect || 
-                        (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) 
-                        ? "#f0f0f0" 
-                        : "transparent"
-                }}
-                onClick={() => handleAspectClick(aspect)}
-            >
-                {PLANET_SYMBOLS?.[aspect.planet1]} {ASPECTS?.[aspect.type]?.name} {PLANET_SYMBOLS?.[aspect.planet2]} ({aspect.angle?.toFixed(2)}°)
-            </div>
-        ))}
-    </div>
-
-    {/* Contenedor de planetas */}
-    <div className="planets-list">
-        <h3>Planetas:</h3>
-        {planets?.map(planet => (
-            <div 
-                key={planet.name}
-                className="planet-list-item"
-                style={{
-                    backgroundColor: selectedPlanet === planet.name ? "#f0f0f0" : "transparent"
-                }}
-                onClick={() => handlePlanetClick(planet.name)}
-            >
-                {PLANET_SYMBOLS?.[planet.name]} {planet.longitude?.toFixed(2)}° {planet.sign}
-                {planet.house !== undefined && ` - Casa ${planet.house}`}
-            </div>
-        ))}
-    </div>
-</div>
-
-{/* Estrellas Fijas en Conjunción */}
-{activeStars?.length > 0 && (
-    <div className="fixed-stars-list">
-        <h3>Estrellas Fijas en Conjunción:</h3>
-        {activeStars?.map((star, index) => {
-            const conjunctPlanets = findConjunctPlanets(star, planets, date);
-            const currentLongitude = getCurrentStarPosition(star, date);
-            return (
-                <div 
-                    key={`star-${index}`}
-                    className="planet-list-item"
-                    onClick={() => handleStarClick(star)}
-                    style={{ cursor: "pointer" }}
-                >
-                    <span className="star-symbol">★</span> {star.name} ({currentLongitude?.toFixed(2)}°)
-                    <br/>
-                    <small>
-                        Conjunción con: {conjunctPlanets?.map(p => 
-                            `${PLANET_SYMBOLS?.[p.name] || "?"} (${p.diff}°)`
-                        ).join(", ")}
-                        <br/>
-                        Efecto: {star.effect || "No definido"}
-                    </small>
-                </div>
-            );
-        })}
-    </div>
-)}
-
-{/* Tabla de Dignidades */}
-{dignityTable && (
-    <div className="dignity-container">
-        <h3>Tabla de Dignidades</h3>
-        <table className="dignity-table">
-            <thead>
-                <tr>
-                    <th>Planeta</th>
-                    <th>Signo</th>
-                    <th>Casa</th>
-                    <th>Dignidad</th>
-                    <th>Angular</th>
-                    <th>Aspectos</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {dignityTable?.tabla?.map((row, index) => (
-                    <tr key={index}>
-                        <td>{PLANET_SYMBOLS?.[row.planeta] || "?"} {row.planeta}</td>
-                        <td>{row.signo || "No definido"}</td>
-                        <td>{row.casa || "No definida"}</td>
-                        <td>{row.puntos_dignidad || 0}</td>
-                        <td>{row.puntos_angular || 0}</td>
-                        <td>{row.puntos_aspectos || 0}</td>
-                        <td>{row.total_planeta || 0}</td>
-                    </tr>
-                ))}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colSpan="6">Total General</td>
-                    <td>{dignityTable?.total_general || 0}</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-)}
-
-{triplicityTable && (
-    <div className="triplicity-container">
-        <h3>Triplicidades</h3>
-        <div style={{ marginBottom: "10px" }}>
-            Lado: <strong>{birthType?.toUpperCase() || "Desconocido"}</strong>
-        </div>
-        <table className="triplicity-table">
-            <thead>
-                <tr>
-                    <th>CASA</th>
-                    <th>ELEMENTO</th>
-                    <th>RIGE</th>
-                    <th>0_a_28</th>
-                    <th>28_a_56</th>
-                    <th>56_a_84</th>
-                </tr>
-            </thead>
-            <tbody>
-                {triplicityTable?.map((house, index) => {
-                    const dignityValues = dignityTable?.tabla?.reduce((acc, row) => {
-                        acc[row.planeta] = row.total_planeta;
-                        return acc;
-                    }, {}) || {};
-
-                    const rulers = house.triplicity_rulers || {};
-                    let displayRulers;
-
-                    if (birthType === "seco") {
-                        displayRulers = {
-                            first: rulers?.regente2, // Seco
-                            second: rulers?.regente1, // Húmedo
-                            third: rulers?.regente3, // Participativo
-                        };
-                    } else {
-                        displayRulers = {
-                            first: rulers?.regente1, // Húmedo
-                            second: rulers?.regente2, // Seco
-                            third: rulers?.regente3, // Participativo
-                        };
-                    }
-
-                    return (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{house?.element || "Desconocido"}</td>
-                            <td>{house?.meaning || "No definido"}</td>
-                            <td>
-                                {PLANET_SYMBOLS?.[displayRulers.first] || "?"}
-                                {dignityValues[displayRulers.first] !== undefined &&
-                                    ` (${dignityValues[displayRulers.first]})`}
-                            </td>
-                            <td>
-                                {PLANET_SYMBOLS?.[displayRulers.second] || "?"}
-                                {dignityValues[displayRulers.second] !== undefined &&
-                                    ` (${dignityValues[displayRulers.second]})`}
-                            </td>
-                            <td>
-                                {PLANET_SYMBOLS?.[displayRulers.third] || "?"}
-                                {dignityValues[displayRulers.third] !== undefined &&
-                                    ` (${dignityValues[displayRulers.third]})`}
-                            </td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-    </div>
-)}
-
-{/* Sección de interpretaciones */}
-{interpretations && (
-    <div className="interpretations-container">
-        <div className="interpretation-section">
-            <h3>Planetas en Signos</h3>
-            {interpretations?.planets_in_signs?.map((interp, index) => (
-                <div key={`sign-${index}`} className="interpretation-item">
-                    <div className="interpretation-title">
-                        {PLANET_SYMBOLS?.[interp.planet] || interp.planet} en {interp.sign}
+                            {/* Planetas */}
+                            {planets.map((planet) => {
+                                const adjustment = adjustPlanetLabel(planet, planets);
+                                const adjustedAngle = ((planet.longitude + adjustment.angleOffset - 90) * Math.PI) / 180;
+                                const x = DIMENSIONS.centerX + DIMENSIONS.innerRadius * Math.cos(adjustedAngle);
+                                const y = DIMENSIONS.centerY + DIMENSIONS.innerRadius * Math.sin(adjustedAngle);
+                                
+                                const labelX = DIMENSIONS.centerX + adjustment.radius * Math.cos(adjustedAngle);
+                                const labelY = DIMENSIONS.centerY + adjustment.radius * Math.sin(adjustedAngle);
+                                
+                                const isSelected = selectedPlanet === planet.name;
+                                
+                                return (
+                                    <g 
+                                        key={planet.name}
+                                        onClick={() => handlePlanetClick(planet.name)}
+                                        style={{cursor: 'pointer'}}
+                                    >
+                                        <circle
+                                            cx={x}
+                                            cy={y}
+                                            r={isSelected ? "6" : "4"}
+                                            fill={getPlanetColor(planet.name, planet.longitude)}
+                                            stroke="#000"
+                                            strokeWidth={isSelected ? "2" : "1"}
+                                        />
+                                        <text
+                                            x={labelX}
+                                            y={labelY}
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                            className="planet-label"
+                                            style={{
+                                                fontSize: isSelected ? "24px" : "20px"
+                                            }}
+                                        >
+                                            {PLANET_SYMBOLS[planet.name]}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+                        </svg>
                     </div>
-                    {interp?.interpretation?.physical && (
-                        <div className="physical-plane">
-                            <div className="plane-title">Plano Físico:</div>
-                            <div className="interpretation-content">{interp?.interpretation?.physical}</div>
+
+                    <div className="planet-container">
+                        <div className="aspects-list">
+                            <h3>Aspectos:</h3>
+                            {aspects.map((aspect, index) => (
+                                <div 
+                                    key={`aspect-desc-${index}`} 
+                                    className="aspect-list-item"
+                                    style={{
+                                        backgroundColor: selectedAspect === aspect || 
+                                            (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) 
+                                            ? '#f0f0f0' 
+                                            : 'transparent'
+                                    }}
+                                    onClick={() => handleAspectClick(aspect)}
+                                >
+                                    {PLANET_SYMBOLS[aspect.planet1]} {ASPECTS[aspect.type].name} {PLANET_SYMBOLS[aspect.planet2]} ({aspect.angle.toFixed(2)}°)
+                                </div>
+                            ))}
                         </div>
-                    )}
-                    {interp?.interpretation?.astral && (
-                        <div className="astral-plane">
-                            <div className="plane-title">Plano Astral:</div>
-                            <div className="interpretation-content">{interp?.interpretation?.astral}</div>
+
+                        <div className="planets-list">
+                            <h3>Planetas:</h3>
+                            {planets.map(planet => (
+                                <div 
+                                    key={planet.name}
+                                    className="planet-list-item"
+                                    style={{
+                                        backgroundColor: selectedPlanet === planet.name ? '#f0f0f0' : 'transparent'
+                                    }}
+                                    onClick={() => handlePlanetClick(planet.name)}
+                                >
+                                    {PLANET_SYMBOLS[planet.name]} {planet.longitude.toFixed(2)}° {planet.sign}
+                                    {planet.house !== undefined && ` - Casa ${planet.house}`}
+                                </div>
+                            ))}
                         </div>
-                    )}
-                </div>
-            ))}
-        </div>
 
-        <div className="interpretation-section">
-            <h3>Planetas en Casas</h3>
-            {interpretations?.planets_in_houses?.map((interp, index) => (
-                <div key={`house-${index}`} className="interpretation-item">
-                    <div className="interpretation-title">
-                        {PLANET_SYMBOLS?.[interp.planet] || interp.planet} en Casa {interp.house}
+                        {activeStars.length > 0 && (
+                            <div className="fixed-stars-list">
+                                <h3>Estrellas Fijas en Conjunción:</h3>
+                                {activeStars.map((star, index) => {
+                                    const conjunctPlanets = findConjunctPlanets(star, planets, date);
+                                    const currentLongitude = getCurrentStarPosition(star, date);
+                                    return (
+                                        <div 
+                                            key={`star-${index}`}
+                                            className="planet-list-item"
+                                            onClick={() => handleStarClick(star)}
+                                            style={{cursor: 'pointer'}}
+                                        >
+                                            <span className="star-symbol">★</span> {star.name} ({currentLongitude.toFixed(2)}°)
+                                            <br/>
+                                            <small>
+                                                Conjunción con: {conjunctPlanets.map(p => 
+                                                    `${PLANET_SYMBOLS[p.name]} (${p.diff}°)`
+                                                ).join(', ')}
+                                                <br/>
+                                                Efecto: {star.effect}
+                                            </small>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {dignityTable && (
+                            <div className="dignity-container">
+                                <h3>Tabla de Dignidades</h3>
+                                <table className="dignity-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Planeta</th>
+                                            <th>Signo</th>
+                                            <th>Casa</th>
+                                            <th>Dignidad</th>
+                                            <th>Angular</th>
+                                            <th>Aspectos</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+										{dignityTable.tabla.map((row, index) => (
+                                            <tr key={index}>
+                                                <td>{PLANET_SYMBOLS[row.planeta]} {row.planeta}</td>
+                                                <td>{row.signo}</td>
+                                                <td>{row.casa}</td>
+                                                <td>{row.puntos_dignidad}</td>
+                                                <td>{row.puntos_angular}</td>
+                                                <td>{row.puntos_aspectos}</td>
+                                                <td>{row.total_planeta}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="6">Total General</td>
+                                            <td>{dignityTable.total_general}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        )}
+
+                        {triplicityTable && (
+                            <div className="triplicity-container">
+                                <h3>Triplicidades</h3>
+                                <div style={{marginBottom: '10px'}}>
+                                    Lado: <strong>{birthType?.toUpperCase()}</strong>
+                                </div>
+                                <table className="triplicity-table">
+                                    <thead>
+                                        <tr>
+                                            <th>CASA</th>
+                                            <th>ELEMENTO</th>
+                                            <th>RIGE</th>
+                                            <th>0_a_28</th>
+                                            <th>28_a_56</th>
+                                            <th>56_a_84</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {triplicityTable.map((house, index) => {
+                                            const dignityValues = dignityTable.tabla.reduce((acc, row) => {
+                                                acc[row.planeta] = row.total_planeta;
+                                                return acc;
+                                            }, {});
+
+                                            const rulers = house.triplicity_rulers;
+                                            let displayRulers;
+                    
+                                            if (birthType === 'seco') {
+                                                displayRulers = {
+                                                    first: rulers.regente2,  // Seco
+                                                    second: rulers.regente1,  // Húmedo
+                                                    third: rulers.regente3   // Participativo
+                                                };
+                                            } else {
+                                                displayRulers = {
+                                                    first: rulers.regente1,  // Húmedo
+                                                    second: rulers.regente2,  // Seco
+                                                    third: rulers.regente3   // Participativo
+                                                };
+                                            }
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{house.element}</td>
+                                                    <td>{house.meaning}</td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.first]}
+                                                        {dignityValues[displayRulers.first] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.first]})`}
+                                                    </td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.second]}
+                                                        {dignityValues[displayRulers.second] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.second]})`}
+                                                    </td>
+                                                    <td>
+                                                        {PLANET_SYMBOLS[displayRulers.third]}
+                                                        {dignityValues[displayRulers.third] !== undefined && 
+                                                            ` (${dignityValues[displayRulers.third]})`}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {/* Sección de interpretaciones */}
+                        {interpretations && (
+                            <div className="interpretations-container">
+                                <div className="interpretation-section">
+                                    <h3>Planetas en Signos</h3>
+                                    {interpretations.planets_in_signs.map((interp, index) => (
+                                        <div key={`sign-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {PLANET_SYMBOLS[interp.planet]} en {interp.sign}
+                                            </div>
+                                            {interp.interpretation.physical && (
+                                                <div className="physical-plane">
+                                                    <div className="plane-title">Plano Físico:</div>
+                                                    <div className="interpretation-content">
+                                                        {interp.interpretation.physical}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {interp.interpretation.astral && (
+                                                <div className="astral-plane">
+                                                    <div className="plane-title">Plano Astral:</div>
+                                                    <div className="interpretation-content">
+                                                        {interp.interpretation.astral}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Planetas en Casas</h3>
+                                    {interpretations.planets_in_houses.map((interp, index) => (
+                                        <div key={`house-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {PLANET_SYMBOLS[interp.planet]} en Casa {interp.house}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Aspectos</h3>
+                                    {interpretations.aspects.map((interp, index) => (
+                                        <div key={`aspect-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                {interp.planets} - {interp.type}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="interpretation-section">
+                                    <h3>Regentes de Casas</h3>
+                                    {interpretations.house_rulers.map((interp, index) => (
+                                        <div key={`ruler-${index}`} className="interpretation-item">
+                                            <div className="interpretation-title">
+                                                Regente {interp.ruler_type} de Casa {interp.house} ({interp.ruler}) 
+                                                en Casa {interp.ruler_house}
+                                            </div>
+                                            <div className="interpretation-content">{interp.interpretation}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <div className="interpretation-content">{interp?.interpretation}</div>
-                </div>
-            ))}
+                </>
+            )}
         </div>
-
-        <div className="interpretation-section">
-            <h3>Aspectos</h3>
-            {interpretations?.aspects?.map((interp, index) => (
-                <div key={`aspect-${index}`} className="interpretation-item">
-                    <div className="interpretation-title">
-                        {interp?.planets} - {interp?.type}
-                    </div>
-                    <div className="interpretation-content">{interp?.interpretation}</div>
-                </div>
-            ))}
-        </div>
-
-        <div className="interpretation-section">
-            <h3>Regentes de Casas</h3>
-            {interpretations?.house_rulers?.map((interp, index) => (
-                <div key={`ruler-${index}`} className="interpretation-item">
-                    <div className="interpretation-title">
-                        Regente {interp?.ruler_type} de Casa {interp?.house} ({interp?.ruler}) 
-                        en Casa {interp?.ruler_house}
-                    </div>
-                    <div className="interpretation-content">{interp?.interpretation}</div>
-                </div>
-            ))}
-        </div>
-    </div>
-)}
-
-import React from "react";
-import ReactDOM from "react-dom/client";
-
+    );
+}
+	    
 document.addEventListener("click", function(event) {
     let link = event.target.closest(".star-link");
     if (!link) return;
@@ -1868,48 +1892,12 @@ document.addEventListener("click", function(event) {
 
     console.log("Intentando abrir:", url); // Depuración en consola
 
-    // ✅ Abrir directamente la URL si es válida
-    if (url && url.startsWith("http")) {
-        window.open(url, "_blank");
-    } else {
-        console.error("URL inválida:", url);
-    }
+    // ✅ Abrir directamente la URL sin pasar por el servidor
+    window.open(url, "_blank");
 });
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-
-const buscarBtn = document.getElementById("buscar");
-if (buscarBtn) {
-    buscarBtn.addEventListener("click", async () => {
-        const ciudad = document.getElementById("ciudad").value;
-        const fecha = document.getElementById("fecha").value;
-        const hora = document.getElementById("hora").value;
-
-        if (!ciudad || !fecha || !hora) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
-
-        try {
-            const response = await fetch("https://carta-astral.onrender.com/buscar_coordenadas", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ciudad, fecha, hora }),
-            });
-
-            const data = await response.json();
-            if (data.error) {
-                alert("Error: " + data.error);
-            } else {
-                document.getElementById("coordinates").innerHTML = 
-                    `<b>Coordenadas:</b> Lat ${data.lat}, Lon ${data.lon}`;
-            }
-        } catch (error) {
-            console.error("Error en la consulta:", error);
-        }
-    });
-}
 </script>
 </body>
 </html>
