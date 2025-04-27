@@ -968,32 +968,6 @@ def obtener_zona_horaria(ciudad, fecha):
     resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
     
     if not resultado.empty:
-        zona_horaria = resultado.iloc[-1][2]  # Ajusta según la columna correcta
-        
-        # Convertir la fecha ingresada a un objeto datetime
-        try:
-            fecha_consulta = datetime.strptime(fecha, "%Y-%m-%d")
-        except ValueError:
-            return "Formato de fecha inválido. Usa YYYY-MM-DD."
-        
-        mes = fecha_consulta.month
-        
-        # Definir reglas según el hemisferio
-        if "Europe/" in resultado.iloc[-1][0] or "America/New_York" in resultado.iloc[-1][0]:  # Hemisferio Norte
-            if 3 <= mes <= 10:
-                zona_horaria = "CEST"  # Verano en Europa
-        elif "America/Santiago" in resultado.iloc[-1][0] or "Australia/Sydney" in resultado.iloc[-1][0]:  # Hemisferio Sur
-            if mes in [12, 1, 2, 3]:
-                zona_horaria = "CLST"  # Verano en Chile
-        
-        return zona_horaria
-
-    return "Ciudad no encontrada en la base de datos."
-
-def obtener_zona_horaria(ciudad, fecha):
-    resultado = df[df.iloc[:, 0].str.contains(ciudad, case=False, na=False)]
-    
-    if not resultado.empty:
         zona_horaria = resultado.iloc[-1][2]  # Ajusta el índice según la columna correcta
         
         # Convertir la fecha ingresada a un objeto datetime
@@ -1036,14 +1010,15 @@ def open_file():
 
 @app.route('/cities', methods=['GET'])
 def get_cities():
-    try:
-        cities_list = [
-            {"name": city_data["name"], "value": key}
-            for key, city_data in CITIES_DB.items()
-        ]
-        return jsonify(cities_list)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    url = "https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey=TU_API_KEY"
+    respuesta = requests.get(url)
+    datos = respuesta.json()
+
+    if "features" not in datos:
+        return jsonify({"error": "No se encontraron ciudades para la consulta."})
+
+    cities_list = [{"name": ciudad["properties"]["name"]} for ciudad in datos["features"]]
+    return jsonify(cities_list)
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
