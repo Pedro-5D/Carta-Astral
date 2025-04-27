@@ -1314,6 +1314,21 @@ function Resultados() {
                     {/* Aquí podrías renderizar los planetas */}
                 </div>
             )}
+
+            {/* Agregar la rueda astral aquí */}
+            <div className="wheel-container">
+                <svg viewBox="0 0 600 600">
+                    {/* Círculo exterior */}
+                    <circle
+                        cx={DIMENSIONS.centerX}
+                        cy={DIMENSIONS.centerY}
+                        r={DIMENSIONS.radius}
+                        fill="none"
+                        stroke="#333"
+                        strokeWidth="2"
+                    />
+                </svg>
+            </div>
         </div>
     );
 }
@@ -1415,28 +1430,6 @@ function App() {
         window.location.href = `https://carta-astral.onrender.com/open-file?path=${encodeURIComponent(star.filePath)}`;
     }
 };
-
-	import React from "react";
-import ReactDOM from "react-dom";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-    <div>
-        <div className="wheel-container">
-            <svg viewBox="0 0 600 600">
-                {/* Círculo exterior */}
-                <circle
-                    cx={DIMENSIONS.centerX}
-                    cy={DIMENSIONS.centerY}
-                    r={DIMENSIONS.radius}
-                    fill="none"
-                    stroke="#333"
-                    strokeWidth="2"
-                />
-            </svg>
-        </div>
-    </div>
-);
 
 	// Renderizado
     return (
