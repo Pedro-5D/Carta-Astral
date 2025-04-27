@@ -1212,7 +1212,5 @@ print("\nCiudades disponibles:")
 for ciudad in obtener_ciudades():
     print(f"- {ciudad}")
 
-
-
     print("Servidor iniciando")
     app.run(host='0.0.0.0', port=10000, debug=True)
