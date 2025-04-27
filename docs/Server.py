@@ -1146,21 +1146,21 @@ def obtener_coordenadas():
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
-@app.route("/cities", methods=["GET"])
+@app.route("/cities", methods=["POST"])
 def obtener_ciudades():
-    ciudad = request.args.get("city", "")
-    fecha = request.args.get("fecha", "")
-    hora = request.args.get("hora", "")
+    data = request.json
+    ciudad = data.get("city", "")
+    fecha = data.get("fecha", "")
+    hora = data.get("hora", "")
 
     if not ciudad:
         return jsonify({"error": "Debes proporcionar una ciudad."}), 400
 
-    # Consultar la API y obtener datos
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
 
     if "error" in datos_ciudad:
-        return jsonify(datos_ciudad), 404  # Si hay error, devolverlo
-    
+        return jsonify(datos_ciudad), 404  
+
     return jsonify(datos_ciudad)
 
 @app.route('/carta-astral', methods=['GET'])
