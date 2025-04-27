@@ -1192,25 +1192,31 @@ from flask import Flask, send_file
 
 app = Flask(__name__, template_folder="docs/templates")
 
-# Esto ya estaba en tu código, no lo cambies
-if __name__ == '__main__':
-    print("\nIniciando servidor de carta astral con interpretaciones completas...")
-    print("Cargando efemérides, configuración e interpretaciones...")
-    
-    # Inicializar el intérprete al arrancar el servidor
-    init_interpreter()
-    
 import requests
 
 def obtener_ciudades():
     url = "https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey=TU_API_KEY"
     respuesta = requests.get(url)
     datos = respuesta.json()
+
+    print("Respuesta de la API:", datos)  # 💡 Verifica el contenido antes de acceder a 'features'
+
+    if "features" not in datos:
+        return ["No se encontraron ciudades para la consulta."]
+
     return [ciudad["properties"]["name"] for ciudad in datos["features"]]
 
-print("\nCiudades disponibles:")
-for ciudad in obtener_ciudades():
-    print(f"- {ciudad}")
+# ✅ Ahora viene la ejecución del programa
+if __name__ == '__main__':
+    print("\nIniciando servidor de carta astral con interpretaciones completas...")
+    print("Cargando efemérides, configuración e interpretaciones...")
+
+    # Inicializar el intérprete al arrancar el servidor
+    init_interpreter()
+
+    print("\nCiudades disponibles:")
+    for ciudad in obtener_ciudades():
+        print(f"- {ciudad}")
 
     print("Servidor iniciando")
     app.run(host='0.0.0.0', port=10000, debug=True)
