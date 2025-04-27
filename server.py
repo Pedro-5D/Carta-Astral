@@ -1150,11 +1150,11 @@ def obtener_coordenadas():
 
 from flask import send_file
 
+from flask import send_from_directory
+
 @app.route('/')
 def home():
-    return send_file('index.html')  # Flask lo tomará directamente de la carpeta raíz
-
-app = Flask(__name__, template_folder="docs/templates")
+    return send_from_directory('static', 'index.html')
 
 # ✅ Ahora viene la ejecución del programa
 if __name__ == '__main__':
