@@ -1120,7 +1120,7 @@ def calculate():
         return jsonify({"error": str(e)}), 500
 
 # Ruta para obtener la zona horaria
-@app.route("/zona_horaria", methods=["GET"])
+@app.route("/zona_horaria", methods=["POST"])
 def zona_horaria():
     ciudad = request.args.get("ciudad")
     fecha = request.args.get("fecha")  # Obtener fecha de la consulta
@@ -1146,7 +1146,7 @@ def obtener_coordenadas():
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
-@app.route("/cities", methods=["GET"])
+@app.route("/cities", methods=["POST"])
 def obtener_ciudades():
     ciudad = request.args.get("city", "")
     if not ciudad:
@@ -1158,7 +1158,7 @@ def obtener_ciudades():
     
     return jsonify(datos_ciudad)
 
-@app.route('/carta-astral', methods=['GET'])
+@app.route('/carta-astral', methods=['POST'])
 def carta_astral():
     fecha = request.args.get('fecha')
     hora = request.args.get('hora')
