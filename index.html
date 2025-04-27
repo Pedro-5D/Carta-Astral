@@ -1871,8 +1871,10 @@ document.addEventListener("click", function(event) {
     window.open(url, "_blank");
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+if (!window.root) {
+    window.root = ReactDOM.createRoot(document.getElementById("root"));
+    window.root.render(<App />);
+}
 </script>
 </body>
 </html>
