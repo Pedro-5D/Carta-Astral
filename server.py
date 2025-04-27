@@ -1152,7 +1152,7 @@ from flask import send_file
 
 @app.route('/')
 def home():
-    return send_file('index.html')  # Ahora Flask lo tomará desde la carpeta principal
+    return send_file('index.html')  # Flask lo tomará directamente de la carpeta raíz
 
 app = Flask(__name__, template_folder="docs/templates")
 
