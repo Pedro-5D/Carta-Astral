@@ -1568,11 +1568,7 @@ function App() {
                                 const conjunctPlanets = findConjunctPlanets(star, planets, date);
                                 
                                 return (
-                                    <g 
-                                        key={`star-${index}`}
-                                        onClick={() => handleStarClick(star)}
-                                        <div style="cursor: pointer;"</div>
-                                    >
+                                    <g key={`star-${index}`} onClick={() => handleStarClick(star)} style={{ cursor: "pointer" }}>
                                         <text
                                             x={x}
                                             y={y}
@@ -1582,7 +1578,8 @@ function App() {
                                             stroke="#000"
                                             strokeWidth="0.5"
                                             style={{
-                                                <div style="font-size: {% if star.magnitude == 12 %}16px{% else %}12px{% endif %}; font-weight: bold;"> </div>
+                                                fontSize: star.magnitude === 12 ? "16px" : "12px",
+                                                fontWeight: "bold"
                                             }}
                                         >
                                             ★
