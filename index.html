@@ -1271,8 +1271,9 @@ function createArcPath(startAngle, endAngle) {
   <button onclick="cargarCiudades(document.getElementById('ciudadInput').value)">Buscar</button>
 </div>
 
-<!-- Asegurar que el div está correctamente cerrado -->
+{/* Asegurar que el div está correctamente cerrado */}
 <div id="resultados"></div>
+
 
 function cargarCiudades(ciudad) {
     fetch(`/cities?ciudad=${ciudad}`)  // Se usa el input del usuario
