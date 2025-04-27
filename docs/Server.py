@@ -1192,4 +1192,4 @@ if datos_ciudades:
         print(f"- {ciudad['properties']['name']}")
 
 print("Iniciando Carta Astral")
-app.run(host="0.0.0.0", port=10100, ssl_context=("cert.pem", "key_nopass.pem"))
+app.run(host='0.0.0.0', port=10000, debug=True)
