@@ -1175,15 +1175,6 @@ def carta_astral():
     
     return jsonify(resultado)
 
-import os
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return render_template("index.html", stars=activeStars, planets=planets)
-
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
