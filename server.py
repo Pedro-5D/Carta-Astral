@@ -1178,11 +1178,14 @@ def carta_astral():
 import os
 from flask import Flask, render_template
 
-app = Flask(__name__, template_folder=os.path.abspath("docs"))
+app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", stars=activeStars, planets=planets)
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
