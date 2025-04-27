@@ -1148,13 +1148,11 @@ def obtener_coordenadas():
     datos_ciudad = obtener_datos_ciudad(ciudad, fecha, hora)
     return jsonify(datos_ciudad)
 
-from flask import Flask, send_file
-
-from flask import render_template
+from flask import send_file
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Flask buscará en la carpeta "templates"
+    return send_file('index.html')  # Ahora Flask lo tomará desde la carpeta principal
 
 app = Flask(__name__, template_folder="docs/templates")
 
