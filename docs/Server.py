@@ -1200,9 +1200,19 @@ if __name__ == '__main__':
     # Inicializar el intérprete al arrancar el servidor
     init_interpreter()
     
-   print("\nCiudades disponibles:")
-    for city_key, city_data in CITIES_DB.items():
-        print(f"- {city_data['name']}")
+import requests
+
+def obtener_ciudades():
+    url = "https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey=TU_API_KEY"
+    respuesta = requests.get(url)
+    datos = respuesta.json()
+    return [ciudad["properties"]["name"] for ciudad in datos["features"]]
+
+print("\nCiudades disponibles:")
+for ciudad in obtener_ciudades():
+    print(f"- {ciudad}")
+
+
 
     print("Servidor iniciando")
     app.run(host='0.0.0.0', port=10000, debug=True)
