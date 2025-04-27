@@ -1437,22 +1437,19 @@ function App() {
             </div>
         </div>
 
-<>
- <div className="wheel-container">
-        <svg viewBox="0 0 600 600">
-            {/* Círculo exterior */}
-            <circle
-                cx={DIMENSIONS.centerX}
-                cy={DIMENSIONS.centerY}
-                r={DIMENSIONS.radius}
-                fill="none"
-                stroke="#333"
-                strokeWidth="2"
-            />
-        </svg>
-    </div>
-</>
-
+<div className="wheel-container">
+    <svg viewBox="0 0 600 600">
+        {/* Círculo exterior */}
+        <circle
+            cx={DIMENSIONS.centerX}
+            cy={DIMENSIONS.centerY}
+            r={DIMENSIONS.radius}
+            fill="none"
+            stroke="#333"
+            strokeWidth="2"
+        />
+    </svg>
+</div>
 
                             {/* Signos zodiacales */}
                             {SIGNS.map(sign => {
