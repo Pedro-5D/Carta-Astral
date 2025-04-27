@@ -985,7 +985,7 @@ def obtener_ciudades():
     if "features" not in datos:
         return ["No se encontraron ciudades para la consulta."]
 
-    return [ciudad["properties"]["name"] for ciudad in datos["features"]]
+    return [ciudad["properties"]["formatted"] for ciudad in datos["features"]]
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
