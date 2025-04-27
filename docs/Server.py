@@ -1180,7 +1180,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return send_from_directory("docs", "index.html")
+    return send_from_directory("./docs", "index.html")
 	
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
