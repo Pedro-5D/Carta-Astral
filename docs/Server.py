@@ -1010,7 +1010,7 @@ def open_file():
 
 @app.route('/cities', methods=['GET'])
 def get_cities():
-    url = "https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey=TU_API_KEY"
+    url = f"https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey={API_KEY}"
     respuesta = requests.get(url)
     datos = respuesta.json()
 
@@ -1019,6 +1019,7 @@ def get_cities():
 
     cities_list = [{"name": ciudad["properties"]["name"]} for ciudad in datos["features"]]
     return jsonify(cities_list)
+
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
@@ -1166,20 +1167,6 @@ def obtener_coordenadas():
 from flask import Flask, send_file
 
 app = Flask(__name__, template_folder="docs/templates")
-
-import requests
-
-def obtener_ciudades():
-    url = "https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey=TU_API_KEY"
-    respuesta = requests.get(url)
-    datos = respuesta.json()
-
-    print("Respuesta de la API:", datos)  # 💡 Verifica el contenido antes de acceder a 'features'
-
-    if "features" not in datos:
-        return ["No se encontraron ciudades para la consulta."]
-
-    return [ciudad["properties"]["name"] for ciudad in datos["features"]]
 
 # ✅ Ahora viene la ejecución del programa
 if __name__ == '__main__':
