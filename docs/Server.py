@@ -1009,17 +1009,17 @@ def open_file():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/cities', methods=['GET'])
-def get_cities():
+def obtener_ciudades():
     url = f"https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey={API_KEY}"
     respuesta = requests.get(url)
     datos = respuesta.json()
 
+    print("Respuesta de la API:", datos)  # 💡 Verifica el contenido antes de acceder a 'features'
+
     if "features" not in datos:
-        return jsonify({"error": "No se encontraron ciudades para la consulta."})
+        return ["No se encontraron ciudades para la consulta."]
 
-    cities_list = [{"name": ciudad["properties"]["name"]} for ciudad in datos["features"]]
-    return jsonify(cities_list)
-
+    return [ciudad["properties"]["name"] for ciudad in datos["features"]]
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
@@ -1031,7 +1031,7 @@ def calculate():
         if not data or not data.get('city'):
             return jsonify({"error": "Ciudad no especificada"}), 400
             
-        city_data = CITIES_DB.get(data['city'].lower())
+        city_data = obtener_datos_ciudad(data['city'], data['date'], data['time'])
         positions = calculate_positions(
             data['date'],
             data['time'],
