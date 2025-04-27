@@ -1289,6 +1289,9 @@ function cargarCiudades(ciudad) {
         .catch(error => console.error("Error de conexión:", error));
 }
 
+import React from "react";
+import ReactDOM from "react-dom";
+
 function Resultados() {
     const [error, setError] = React.useState("");
     const [planets, setPlanets] = React.useState([]);
@@ -1302,36 +1305,22 @@ function Resultados() {
     return (
         <div id="results" style={estilosResults}>
             {error && <div style={{ color: "red" }}>{error}</div>}
-            
             <h3>Resultados:</h3>
             <div id="location"></div>
             <div id="timezone"></div>
             <div id="coordinates"></div>
-
             {planets.length > 0 && (
                 <div className="planets-container">
                     <h3>Planetas:</h3>
                     {/* Aquí podrías renderizar los planetas */}
                 </div>
             )}
-
-            {/* Agregar la rueda astral aquí */}
-            <div className="wheel-container">
-                <svg viewBox="0 0 600 600">
-                    {/* Círculo exterior */}
-                    <circle
-                        cx={DIMENSIONS.centerX}
-                        cy={DIMENSIONS.centerY}
-                        r={DIMENSIONS.radius}
-                        fill="none"
-                        stroke="#333"
-                        strokeWidth="2"
-                    />
-                </svg>
-            </div>
         </div>
     );
 }
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Resultados />);
 
 function App() {
     // Estados
