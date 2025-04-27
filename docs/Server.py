@@ -1190,7 +1190,7 @@ def obtener_coordenadas():
 
 from flask import Flask, send_file
 
-app = Flask(__name__, static_folder="docs")
+app = Flask(__name__, template_folder="docs/templates")
 
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
@@ -1200,8 +1200,9 @@ if __name__ == '__main__':
     # Inicializar el intérprete al arrancar el servidor
     init_interpreter()
     
-    print("\nCiudades disponibles:")
+   print("\nCiudades disponibles:")
     for city_key, city_data in CITIES_DB.items():
         print(f"- {city_data['name']}")
-    print("\nServidor iniciando en https://carta-astral.onrender.com")
+
+    print("Servidor iniciando")
     app.run(host='0.0.0.0', port=10000, debug=True)
