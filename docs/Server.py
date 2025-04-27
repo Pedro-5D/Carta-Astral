@@ -996,7 +996,13 @@ def get_cities():
     if not ciudad:
         return jsonify({"error": "Debes proporcionar una ciudad"}), 400
 
-    return jsonify(obtener_ciudades(ciudad))
+    resultado = obtener_ciudades(ciudad)
+
+    # Si la API devolvió un error, responder con el mismo formato
+    if isinstance(resultado, dict) and "error" in resultado:
+        return jsonify(resultado), 500
+
+    return jsonify({"ciudades": resultado})
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
