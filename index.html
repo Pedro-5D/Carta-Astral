@@ -1441,7 +1441,8 @@ function App() {
             </div>
         </div>
 
-                            {/* Signos zodiacales */}
+                        <div>
+	                    {/* Signos zodiacales */}
                             {SIGNS.map(sign => {
                                 const midAngle = ((sign.start + sign.length/2 - 90) * Math.PI) / 180;
                                 const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
