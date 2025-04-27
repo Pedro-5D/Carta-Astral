@@ -1178,7 +1178,7 @@ def carta_astral():
 import os
 from flask import Flask, render_template
 
-app = Flask(__name__, template_folder=os.path.abspath("templates"))
+app = Flask(__name__, template_folder=os.path.abspath("docs"))
 
 @app.route("/")
 def home():
