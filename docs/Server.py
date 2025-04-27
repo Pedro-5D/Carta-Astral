@@ -974,13 +974,19 @@ def open_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+import requests
+
 def obtener_ciudades(ciudad):
     url = f"https://api.geoapify.com/v1/geocode/autocomplete?text={ciudad}&apiKey={API_KEY}"
-    respuesta = requests.get(url)
-    datos = respuesta.json()
+    try:
+        respuesta = requests.get(url)
+        respuesta.raise_for_status()  # Lanza un error si la solicitud falla
+        datos = respuesta.json()
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Error de conexión con la API: {str(e)}"}
 
-    if "features" not in datos:
-        return ["No se encontraron ciudades para la consulta."]
+    if "features" not in datos or not datos["features"]:
+        return {"error": "No se encontraron ciudades para la consulta."}
     
     return [feature["properties"]["formatted"] for feature in datos["features"]]
 
