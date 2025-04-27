@@ -1180,8 +1180,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Bienvenido a Carta Astral"
-
+    return send_from_directory("docs", "index.html")
+	
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
