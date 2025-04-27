@@ -1472,7 +1472,9 @@ function App() {
                 <div id="coordinates"></div>
             </div>
 
-            {error && <div style={{color: 'red'}}>{error}</div>}
+            {% if error %}
+                <div style="color: red;">{{ error }}</div>
+            {% endif %}
 
             {planets.length > 0 && (
                 <>
