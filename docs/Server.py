@@ -7,7 +7,6 @@ from math import sin, cos, tan, atan, atan2, radians, degrees
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
-import pandas as pd
 from flask import Flask, request, jsonify
 from skyfield.api import load
 ts = load.timescale()
