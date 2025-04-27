@@ -10,7 +10,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 jplephem==2.22
 MarkupSafe==3.0.2
-numpy==2.2.4
+numpy==1.26.4
 sgp4==2.24
 skyfield==1.52
 Werkzeug==3.1.3
