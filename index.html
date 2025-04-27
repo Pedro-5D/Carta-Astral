@@ -1828,11 +1828,9 @@ function App() {
     );
 }
 
-if (!window.root) {
-    window.root = ReactDOM.createRoot(document.getElementById("root"));
-    window.root.render(<App />);
-}
-    </script>
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
 </body>
 </html>
                                         
