@@ -1366,20 +1366,25 @@ function App() {
 
 	// Renderizado
     return (
-        <div>
-            <div class="controls">
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
+        <div class="controls">
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
 
-                <label for="fecha">Fecha:</label>
-                <input type="date" id="fecha" />
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" />
 
-                <label for="hora">Hora:</label>
-                <!-- Se acepta minutos -->
-                <input type="time" id="hora" step="60" />
+            <label for="hora">Hora:</label>
+            <input type="time" id="hora" step="60" />
 
-                <button id="buscar">Buscar coordenadas</button>
-            </div>
+            <button id="buscar">Buscar coordenadas</button>
+        </div>
+
+	<div id="results">
+            <h3>Resultados:</h3>
+            <div id="location"></div>
+            <div id="timezone"></div>
+            <div id="coordinates"></div>
+        </div>
 
 	    #results {
                 margin-top: 20px;
@@ -1842,6 +1847,35 @@ document.addEventListener("click", function(event) {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+
+document.getElementById("buscar").addEventListener("click", async () => {
+    const ciudad = document.getElementById("ciudad").value;
+    const fecha = document.getElementById("fecha").value;
+    const hora = document.getElementById("hora").value;
+
+    if (!ciudad || !fecha || !hora) {
+        alert("Por favor, completa todos los campos.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/buscar_coordenadas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ciudad, fecha, hora })
+        });
+
+        const data = await response.json();
+        if (data.error) {
+            alert("Error: " + data.error);
+        } else {
+            document.getElementById("coordinates").innerHTML = 
+                `<b>Coordenadas:</b> Lat ${data.lat}, Lon ${data.lon}`;
+        }
+    } catch (error) {
+        console.error("Error en la consulta:", error);
+    }
+});
 </script>
 </body>
 </html>
