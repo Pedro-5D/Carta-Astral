@@ -1184,9 +1184,6 @@ app = Flask(__name__)
 def home():
     return render_template("index.html", stars=activeStars, planets=planets)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
     print("\nIniciando servidor de carta astral con interpretaciones completas...")
