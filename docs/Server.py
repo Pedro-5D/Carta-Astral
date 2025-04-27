@@ -975,12 +975,10 @@ def open_file():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/cities', methods=['GET'])
-def obtener_ciudades():
-    url = f"https://api.geoapify.com/v1/geocode/autocomplete?text=Bilbao&apiKey={API_KEY}"
+def obtener_ciudades(ciudad):
+    url = f"https://api.geoapify.com/v1/geocode/autocomplete?text={ciudad}&apiKey={API_KEY}"
     respuesta = requests.get(url)
     datos = respuesta.json()
-
-    print("Respuesta de la API:", datos)  # 💡 Verifica el contenido antes de acceder a 'features'
 
     if "features" not in datos:
         return ["No se encontraron ciudades para la consulta."]
