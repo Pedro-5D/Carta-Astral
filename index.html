@@ -1290,7 +1290,9 @@ function cargarCiudades(ciudad) {
 }
 
 function Resultados() {
-    // Definir los estilos en un objeto antes del JSX
+    const [error, setError] = React.useState("");
+    const [planets, setPlanets] = React.useState([]);
+
     const estilosResults = {
         marginTop: "20px",
         padding: "15px",
@@ -1299,10 +1301,19 @@ function Resultados() {
 
     return (
         <div id="results" style={estilosResults}>
+            {error && <div style={{ color: "red" }}>{error}</div>}
+            
             <h3>Resultados:</h3>
             <div id="location"></div>
             <div id="timezone"></div>
             <div id="coordinates"></div>
+
+            {planets.length > 0 && (
+                <div className="planets-container">
+                    <h3>Planetas:</h3>
+                    {/* Aquí podrías renderizar los planetas */}
+                </div>
+            )}
         </div>
     );
 }
@@ -1426,9 +1437,6 @@ function App() {
             </div>
         </div>
 
-            {error && <div style={{color: 'red'}}>{error}</div>}
-
-            {planets.length > 0 && (
                 <>
                     <div className="wheel-container">
                         <svg viewBox="0 0 600 600">
@@ -1440,7 +1448,7 @@ function App() {
                                 fill="none"
                                 stroke="#333"
                                 strokeWidth="2"
-                            />
+                </>
 
                             {/* Signos zodiacales */}
                             {SIGNS.map(sign => {
