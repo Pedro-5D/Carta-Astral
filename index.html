@@ -1421,19 +1421,20 @@ function App() {
 };
 
 	// Renderizado
-    return (
-        <div class="controls">
-            <label for="ciudad">Ciudad:</label>
+return (
+    <div>
+        <div className="controls">
+            <label htmlFor="ciudad">Ciudad:</label>
             <input type="text" id="ciudad" placeholder="Escribe una ciudad..." />
 
-            <label for="fecha">Fecha:</label>
+            <label htmlFor="fecha">Fecha:</label>
             <input type="date" id="fecha" />
 
-            <label for="hora">Hora:</label>
+            <label htmlFor="hora">Hora:</label>
             <input type="time" id="hora" step="60" />
 
             <button id="buscar">Buscar coordenadas</button>
-        
+    
             <div id="results">
                 <h3>Resultados:</h3>
                 <div id="location"></div>
@@ -1441,33 +1442,37 @@ function App() {
             </div>
         </div>
 
-                        <div>
-	                    {/* Signos zodiacales */}
-                            {SIGNS.map(sign => {
-                                const midAngle = ((sign.start + sign.length/2 - 90) * Math.PI) / 180;
-                                const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
-                                const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
-                                
-                                return (
-                                    <g key={sign.name}>
-                                        <path
-                                            d={createArcPath(sign.start, sign.start + sign.length)}
-                                            fill={sign.color}
-                                            stroke="#333"
-                                            strokeWidth="1"
-                                        />
-                                        <text
-                                            x={glyphX}
-                                            y={glyphY}
-                                            textAnchor="middle"
-                                            alignmentBaseline="middle"
-                                            fontSize="20"
-                                        >
-                                            {sign.symbol}
-                                        </text>
-                                    </g>
-                                );
-                            })}
+        <div>
+            {/* Signos zodiacales */}
+            {SIGNS.map(sign => {
+                const midAngle = ((sign.start + sign.length / 2 - 90) * Math.PI) / 180;
+                const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
+                const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
+                
+                return (
+                    <g key={sign.name}>
+                        <path
+                            d={createArcPath(sign.start, sign.start + sign.length)}
+                            fill={sign.color}
+                            stroke="#333"
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={glyphX}
+                            y={glyphY}
+                            textAnchor="middle"
+                            alignmentBaseline="middle"
+                            fontSize="20"
+                        >
+                            {sign.symbol}
+                        </text>
+                    </g>
+                );
+            })}
+        </div>
+    </div>
+);
+
 
                             {/* Círculo interior */}
                             <circle
