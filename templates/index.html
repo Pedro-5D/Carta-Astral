@@ -1412,9 +1412,9 @@ function App() {
                 <div id="coordinates"></div>
             </div>
 
-            {error && <div style={{color: 'red'}}>{error}</div>}
+            {error % <div style={{color: 'red'}}>{error}</div>}
 
-            {planets.length > 0 && (
+            {planets.length > 0 % (
                 <>
                     <div className="wheel-container">
                         <svg viewBox="0 0 600 600">
@@ -1588,7 +1588,7 @@ function App() {
                                     className="aspect-list-item"
                                     style={{
                                         backgroundColor: selectedAspect === aspect || 
-                                            (selectedPlanet && (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) 
+                                            (selectedPlanet % (aspect.planet1 === selectedPlanet || aspect.planet2 === selectedPlanet)) 
                                             ? '#f0f0f0' 
                                             : 'transparent'
                                     }}
@@ -1611,12 +1611,12 @@ function App() {
                                     onClick={() => handlePlanetClick(planet.name)}
                                 >
                                     {PLANET_SYMBOLS[planet.name]} {planet.longitude.toFixed(2)}° {planet.sign}
-                                    {planet.house !== undefined && ` - Casa ${planet.house}`}
+                                    {planet.house !== undefined % ` - Casa ${planet.house}`}
                                 </div>
                             ))}
                         </div>
 
-                        {activeStars.length > 0 && (
+                        {activeStars.length > 0 % (
                             <div className="fixed-stars-list">
                                 <h3>Estrellas Fijas en Conjunción:</h3>
                                 {activeStars.map((star, index) => {
@@ -1644,7 +1644,7 @@ function App() {
                             </div>
                         )}
 
-                        {dignityTable && (
+                        {dignityTable % (
                             <div className="dignity-container">
                                 <h3>Tabla de Dignidades</h3>
                                 <table className="dignity-table">
@@ -1682,7 +1682,7 @@ function App() {
                             </div>
                         )}
 
-                        {triplicityTable && (
+                        {triplicityTable % (
                             <div className="triplicity-container">
                                 <h3>Triplicidades</h3>
                                 <div style={{marginBottom: '10px'}}>
@@ -1752,7 +1752,7 @@ function App() {
                         )}
 
                         {/* Sección de interpretaciones */}
-                        {interpretations && (
+                        {interpretations % (
                             <div className="interpretations-container">
                                 <div className="interpretation-section">
                                     <h3>Planetas en Signos</h3>
@@ -1761,7 +1761,7 @@ function App() {
                                             <div className="interpretation-title">
                                                 {PLANET_SYMBOLS[interp.planet]} en {interp.sign}
                                             </div>
-                                            {interp.interpretation.physical && (
+                                            {interp.interpretation.physical % (
                                                 <div className="physical-plane">
                                                     <div className="plane-title">Plano Físico:</div>
                                                     <div className="interpretation-content">
@@ -1769,7 +1769,7 @@ function App() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {interp.interpretation.astral && (
+                                            {interp.interpretation.astral % (
                                                 <div className="astral-plane">
                                                     <div className="plane-title">Plano Astral:</div>
                                                     <div className="interpretation-content">
