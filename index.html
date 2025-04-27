@@ -1433,23 +1433,36 @@ function App() {
                 <input type="time" id="hora" step="60" />
 
                 <button id="buscar">Buscar coordenadas</button>
-
-                <div id="results">
-                    <h3>Resultados:</h3>
-                    <div id="location"></div>
-                    <div id="timezone"></div>
-                </div>
             </div>
 
-            {/* Contenedor de la rueda astral */}
-            <div className="wheel-container">
-                <svg viewBox="0 0 600 600">
-                    <g>
+            <div id="results" style={{ marginTop: "20px", padding: "15px", border: "1px solid #ccc", backgroundColor: "#f9f9f9", borderRadius: "8px", textAlign: "left", width: "80%", maxWidth: "600px" }}>
+                <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#333" }}>Resultados:</h3>
+                <div id="location" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
+                <div id="timezone" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
+                <div id="coordinates" style={{ fontSize: "16px", marginBottom: "5px", padding: "5px", backgroundColor: "#fff", borderRadius: "5px" }}></div>
+            </div>
+
+            {error && <div style={{ color: "red" }}>{error}</div>}
+
+            {planets.length > 0 && (
+                <div className="wheel-container">
+                    <svg viewBox="0 0 600 600">
+                        {/* Círculo exterior */}
+                        <circle
+                            cx={DIMENSIONS.centerX}
+                            cy={DIMENSIONS.centerY}
+                            r={DIMENSIONS.radius}
+                            fill="none"
+                            stroke="#333"
+                            strokeWidth="2"
+                        />
+
+                        {/* Signos zodiacales */}
                         {SIGNS.map(sign => {
                             const midAngle = ((sign.start + sign.length / 2 - 90) * Math.PI) / 180;
                             const glyphX = DIMENSIONS.centerX + DIMENSIONS.glyphRadius * Math.cos(midAngle);
                             const glyphY = DIMENSIONS.centerY + DIMENSIONS.glyphRadius * Math.sin(midAngle);
-                            
+
                             return (
                                 <g key={sign.name}>
                                     <path
@@ -1470,14 +1483,9 @@ function App() {
                                 </g>
                             );
                         })}
-                    </g>
-                </svg> {/* ✅ Cerrando correctamente */}
-            </div>
-
-            {/* Contenedor de planetas */}
-            <div className="planet-container">
-                {/* Otros elementos JSX fuera del SVG */}
-            </div>
+                    </svg>
+                </div>
+            )}
         </div>
     );
                             {/* Círculo interior */}
