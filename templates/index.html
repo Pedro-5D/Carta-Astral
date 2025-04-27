@@ -1266,6 +1266,28 @@ function createArcPath(startAngle, endAngle) {
     return `M ${x1} ${y1} A ${DIMENSIONS.radius} ${DIMENSIONS.radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x2Inner} ${y2Inner} A ${DIMENSIONS.innerRadius} ${DIMENSIONS.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner} Z`;
 }
 
+<h1>Consulta de ciudades</h1>
+
+<input type="text" id="ciudadInput" placeholder="Introduce una ciudad" />
+<button onclick="cargarCiudades(document.getElementById('ciudadInput').value)">Buscar</button>
+
+<!-- Asegurar que el div está correctamente cerrado -->
+<div id="resultados"></div>
+
+function cargarCiudades(ciudad) {
+    fetch(`/cities?ciudad=${ciudad}`)  // Se usa el input del usuario
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error("Error al obtener ciudades:", data.error);
+            } else {
+                console.log("Ciudades obtenidas:", data.ciudades);
+                document.getElementById("resultados").innerText = JSON.stringify(data.ciudades);
+            }
+        })
+        .catch(error => console.error("Error de conexión:", error));
+}
+
 function App() {
     // Estados
     const [cities, setCities] = React.useState([]);
