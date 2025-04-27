@@ -1289,6 +1289,23 @@ function cargarCiudades(ciudad) {
         .catch(error => console.error("Error de conexión:", error));
 }
 
+function Resultados() {
+    // Definir estilos antes del JSX
+    const estilosResults = {
+        marginTop: "20px",
+        padding: "15px",
+        border: "1px solid #ccc"
+    };
+
+    return (
+        <div id="results" style={estilosResults}>
+            <h3>Resultados:</h3>
+            <div id="location"></div>
+            <div id="timezone"></div>
+        </div>
+    );
+}
+
 function App() {
     // Estados
     const [cities, setCities] = React.useState([]);
