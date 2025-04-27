@@ -974,7 +974,6 @@ def open_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/cities', methods=['GET'])
 def obtener_ciudades(ciudad):
     url = f"https://api.geoapify.com/v1/geocode/autocomplete?text={ciudad}&apiKey={API_KEY}"
     respuesta = requests.get(url)
@@ -982,8 +981,16 @@ def obtener_ciudades(ciudad):
 
     if "features" not in datos:
         return ["No se encontraron ciudades para la consulta."]
+    
+    return [feature["properties"]["formatted"] for feature in datos["features"]]
 
-    return [ciudad["properties"]["formatted"] for ciudad in datos["features"]]
+@app.route('/cities', methods=['GET'])
+def get_cities():
+    ciudad = request.args.get("ciudad")
+    if not ciudad:
+        return jsonify({"error": "Debes proporcionar una ciudad"}), 400
+
+    return jsonify(obtener_ciudades(ciudad))
 	    
 @app.route('/calculate', methods=['POST'])
 def calculate():
