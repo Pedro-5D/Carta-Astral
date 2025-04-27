@@ -1149,6 +1149,12 @@ def obtener_coordenadas():
 
 from flask import Flask, send_file
 
+from flask import render_template
+
+@app.route('/')
+def home():
+    return render_template('index.html')  # ✅ Flask buscará en la carpeta templates automáticamente
+
 app = Flask(__name__, template_folder="docs/templates")
 
 # ✅ Ahora viene la ejecución del programa
