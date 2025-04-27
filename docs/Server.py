@@ -1175,12 +1175,13 @@ def carta_astral():
     
     return jsonify(resultado)
 
-from flask import Flask
-app = Flask(__name__)
+from flask import Flask, send_from_directory
+
+app = Flask(__name__, static_folder="docs")
 
 @app.route("/")
 def home():
-    return send_from_directory("./docs", "index.html")
+    return send_from_directory(app.static_folder, "index.html")
 	
 # Esto ya estaba en tu código, no lo cambies
 if __name__ == '__main__':
