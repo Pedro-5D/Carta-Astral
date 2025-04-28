@@ -96,7 +96,7 @@ def preload_resources():
                               header=None)
     
     # Precargar ciudades comunes
-    cities = ["Madrid", "Barcelona", "Londres", "París", "Nueva York", "Buenos Aires", "México DF"]
+    cities = ["Bilbao", "Madrid", "Barcelona", "Londres", "París", "Nueva York", "Buenos Aires", "México DF"]
     for city in cities:
         common_cities[city.lower()] = obtener_datos_ciudad(city, "", "")
     
