@@ -10,12 +10,12 @@ from math import sin, cos, tan, atan, atan2, radians, degrees
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
+import csv
 from pathlib import Path
 from functools import lru_cache
 import requests
 import urllib.request
 import ssl
-import csv
 
 app = Flask(__name__)
 # Configurar CORS correctamente
@@ -987,6 +987,67 @@ def calculate_houses_with_triplicities(positions, is_dry_birth):
     
     return houses_table
 
+# Nueva función para calcular la precesión y posiciones actuales de estrellas fijas
+def calculate_fixed_stars_positions(date, planetary_positions):
+    """
+    Calcula las posiciones actuales de las estrellas fijas y determina cuáles están activas
+    """
+    # Calcular precesión desde J2000
+    date_obj = datetime.strptime(date, "%Y-%m-%d")
+    year = date_obj.year + (date_obj.month / 12.0) + (date_obj.day / 365.25)
+    years_since_j2000 = year - 2000.0
+    
+    # Tasa de precesión en grados por año
+    precession_rate = 50.2908 / 3600.0
+    precession = precession_rate * years_since_j2000
+    
+    print(f"Precesión calculada para {date}: {precession} grados")
+    
+    # Lista base de estrellas fijas
+    fixed_stars = [
+        {"name": "Aldebaran", "longitude_J2000": 69.00, "effect": "Honor, inteligencia y riqueza", "magnitude": 12, "filePath": "https://www.izarren.top/aldebaran"},
+        {"name": "Antares", "longitude_J2000": 249.18, "effect": "Impulsividad y éxito arriesgado", "magnitude": 12, "filePath": "https://www.izarren.top/antares"},
+        {"name": "Regulus", "longitude_J2000": 148.51, "effect": "Poder, éxito y honores", "magnitude": 12, "filePath": "https://www.izarren.top/regulus"},
+        {"name": "Spica", "longitude_J2000": 203.52, "effect": "Beneficios a través del arte y ciencia", "magnitude": 12, "filePath": "https://www.izarren.top/spica"},
+        {"name": "Sirius", "longitude_J2000": 102.30, "effect": "Honor, renombre y riqueza", "magnitude": 12, "filePath": "https://www.izarren.top/sirio"}
+    ]
+    
+    # Calcular posiciones actuales
+    active_stars = []
+    
+    for star in fixed_stars:
+        # Actualizar posición con la precesión
+        current_longitude = (star["longitude_J2000"] + precession) % 360
+        
+        # Buscar conjunciones con planetas
+        conjunctions = []
+        for planet in planetary_positions:
+            diff = abs(current_longitude - planet["longitude"])
+            adjusted_diff = min(diff, 360 - diff)
+            
+            # Orbe de conjunción basado en la magnitud de la estrella
+            orb = 2.40 if star["magnitude"] >= 12 else 1.20
+            
+            if adjusted_diff <= orb:
+                conjunctions.append({
+                    "planet": planet["name"],
+                    "diff": round(adjusted_diff, 2)
+                })
+        
+        # Si hay conjunciones, la estrella está activa
+        if conjunctions:
+            active_stars.append({
+                "name": star["name"],
+                "longitude": current_longitude,
+                "sign": get_sign(current_longitude),
+                "conjunctions": conjunctions,
+                "effect": star["effect"],
+                "filePath": star.get("filePath", ""),
+                "magnitude": star["magnitude"]
+            })
+    
+    return active_stars
+
 @app.route('/')
 def home():
     return send_file('index.html')
@@ -1112,6 +1173,9 @@ def calculate():
             # Calcular casas y triplicidades
             houses_table = calculate_houses_with_triplicities(positions, birth_type == "seco")
             
+            # Calcular posiciones actuales de estrellas fijas y sus conjunciones
+            fixed_stars = calculate_fixed_stars_positions(data['date'], positions)
+            
             # Generar interpretaciones si el intérprete está disponible
             interpretations = {
                 "planets_in_signs": [],
@@ -1209,7 +1273,10 @@ def calculate():
                     "houses": houses_table,
                     "birth_type": birth_type
                 },
-                "interpretations": interpretations
+                "interpretations": interpretations,
+                "fixed_stars": fixed_stars,  # Añadimos información de estrellas fijas
+                "show_fixed_stars": True,    # Indicador para el frontend
+                "date": data['date']         # Fecha para calcular precesión
             }
             
             return jsonify(response)
@@ -1230,6 +1297,9 @@ def calculate():
             birth_type = "seco" if is_dry_birth(positions) else "húmedo"
             houses_table = calculate_houses_with_triplicities(positions, birth_type == "seco")
             
+            # Calcular estrellas fijas incluso en el camino alternativo
+            fixed_stars = calculate_fixed_stars_positions(data['date'], positions)
+            
             return jsonify({
                 "positions": positions,
                 "coordinates": {
@@ -1249,7 +1319,10 @@ def calculate():
                     "planets_in_houses": [],
                     "aspects": [],
                     "house_rulers": []
-                }
+                },
+                "fixed_stars": fixed_stars,  # Añadimos información de estrellas fijas
+                "show_fixed_stars": True,    # Indicador para el frontend
+                "date": data['date']         # Fecha para calcular precesión
             })
         
     except Exception as e:
