@@ -137,7 +137,7 @@ def calculate_positions_with_utc(utc_datetime, lat=None, lon=None):
         return positions
     except Exception as e:
         print(f"Error calculando posiciones: {str(e)}")
-        raiseimport json
+        raise import json
 from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 from flask_compress import Compress
