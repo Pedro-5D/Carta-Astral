@@ -309,7 +309,7 @@ const COLORS = {
     YELLOW: '#FFFF00'
 };
 
-const FIXED_STARS = [
+	const FIXED_STARS = [
             {
                 name: "Aldebaran",
                 longitude_J2000: 69.00,
@@ -324,7 +324,797 @@ const FIXED_STARS = [
                 filePath: "https://www.izarren.top/antares",
                 magnitude: 12
             },
-            // ... Resto de estrellas fijas (omitidas por brevedad)
+            {
+                name: "Regulus",
+                longitude_J2000: 148.51,
+                effect: "Poder, éxito y honores",
+                filePath: "https://www.izarren.top/regulus",
+                magnitude: 12
+            },
+            {
+                name: "Spica",
+                longitude_J2000: 203.52,
+                effect: "Beneficios a través del arte y ciencia",
+                filePath: "https://www.izarren.top/spica",
+                magnitude: 12
+            },
+            {
+                name: "Sirius",
+                longitude_J2000: 102.30,
+                effect: "Honor, renombre y riqueza",
+                filePath: "https://www.izarren.top/sirio",
+                magnitude: 12
+            },
+            {
+                name: "Algol",
+                longitude_J2000: 56.3,
+                effect: "Desafíos y transformación",
+                filePath: "https://www.izarren.top/algol",
+                magnitude: 12
+            },
+            {
+                name: "Capella",
+                longitude_J2000: 81.40,
+                effect: "Honor y riqueza",
+                filePath: "https://www.izarren.top/capella",
+                magnitude: 12
+            },
+            {
+                name: "Vega",
+                longitude_J2000: 284.03,
+                effect: "Beneficios artísticos y creatividad",
+                filePath: "https://www.izarren.top/vega",
+                magnitude: 12
+            },
+            {
+                name: "Pollux",
+                longitude_J2000: 113.31,
+                effect: "Éxito atlético y marcial",
+                filePath: "https://www.izarren.top/pollux",
+                magnitude: 12
+            },
+            {
+                name: "Fomalhaut",
+                longitude_J2000: 333.0,
+                effect: "Éxito espiritual y místico",
+                filePath: "https://www.izarren.top/fomalhaut",
+                magnitude: 6
+            },
+            {
+                name: "Proción",
+                longitude_J2000: 114.19,
+                effect: "Éxito y honores a través del esfuerzo",
+                filePath: "https://www.izarren.top/procyon",
+                magnitude: 12
+            },
+            {
+                name: "Mira Ceti",
+                longitude_J2000: 31.03,
+                effect: "Misterio y transformación espiritual",
+                filePath: "https://www.izarren.top/mira-de-ceti",
+                magnitude: 6
+            },
+            {
+                name: "Zaurak",
+                longitude_J2000: 53.22,
+                effect: "Sabiduría y paciencia",
+                filePath: "https://www.izarren.top/zaurak",
+                magnitude: 6
+            },
+            {
+                name: "Alkakurops",
+                longitude_J2000: 212.43,
+                effect: "Protección y habilidad estratégica",
+                filePath: "https://www.izarren.top/alkalurops",
+                magnitude: 6
+            },
+            {
+                name: "Markab",
+                longitude_J2000: 353.7,
+                effect: "Viajes y aventuras exitosas",
+                filePath: "https://www.izarren.top/markab",
+                magnitude: 6
+            },
+            {
+                name: "Princeps",
+                longitude_J2000: 212.41,
+                effect: "Liderazgo y nobleza",
+                filePath: "https://www.izarren.top/princeps",
+                magnitude: 6
+            },
+            {
+                name: "Agena",
+                longitude_J2000: 234.2,
+                effect: "Honor y reconocimiento público",
+                filePath: "https://www.izarren.top/agena",
+                magnitude: 6
+            },
+            {
+                name: "Alcione",
+                longitude_J2000: 59.31,
+                effect: "Visión espiritual y experiencias místicas",
+                filePath: "https://www.izarren.top/alcyone",
+                magnitude: 12
+            },
+            {
+                name: "Alkaid",
+                longitude_J2000: 177.1,
+                effect: "Honores militares y liderazgo",
+                filePath: "https://www.izarren.top/alkaid",
+                magnitude: 12
+            },
+            {
+                name: "Gienah",
+                longitude_J2000: 174.5,
+                effect: "Capacidad oratoria y percepción aguda",
+                filePath: "https://www.izarren.top/gienah",
+                magnitude: 12
+            },
+            {
+                name: "Arcturus",
+                longitude_J2000: 204.15,
+                effect: "Éxito a través de la autodeterminación",
+                filePath: "https://www.izarren.top/arcturus",
+                magnitude: 12
+            },
+            {
+                name: "Alphecca",
+                longitude_J2000: 221.52,
+                effect: "Dones artísticos y diplomacia",
+                filePath: "https://www.izarren.top/alphecca",
+                magnitude: 12
+            },
+            {
+                name: "Deneb Algedi",
+                longitude_J2000: 303.5,
+                effect: "Posición de autoridad y justicia",
+                filePath: "https://www.izarren.top/deneb-algedi",
+                magnitude: 12
+            },
+            {
+                name: "Acamar",
+                longitude_J2000: 22.47,
+                effect: "Éxito en cargos públicos",
+                filePath: "https://www.izarren.top/acamar",
+                magnitude: 6
+            },
+            {
+                name: "Avior",
+                longitude_J2000: 172.41,
+                effect: "Mensajero divino",
+                filePath: "https://www.izarren.top/avior",
+                magnitude: 6
+            },
+            {
+                name: "Deneb Kaitos",
+                longitude_J2000: 2.06,
+                effect: "Provoca cambio obligatorio",
+                filePath: "https://www.izarren.top/deneb-kaitos",
+                magnitude: 6
+            },
+            {
+                name: "Altair",
+                longitude_J2000: 301.18,
+                effect: "Culpa de derramamiento de sangre",
+                filePath: "https://www.izarren.top/altair",
+                magnitude: 6
+            },
+            {
+                name: "Thuban",
+                longitude_J2000: 156.36,
+                effect: "El Sutil",
+                filePath: "https://www.izarren.top/thuban",
+                magnitude: 6
+            },
+            {
+                name: "Skat",
+                longitude_J2000: 338.24,
+                effect: "Provoca cambio obligatorio",
+                filePath: "https://www.izarren.top/skat",
+                magnitude: 6
+            },
+            {
+                name: "Biham",
+                longitude_J2000: 336.21,
+                effect: "Los camellos sedientos",
+                filePath: "https://www.izarren.top/biham",
+                magnitude: 6
+            },
+            {
+                name: "Dubhe",
+                longitude_J2000: 134.44,
+                effect: "Calisto",
+                filePath: "https://www.izarren.top/dubhe",
+                magnitude: 6
+            },
+            {
+                name: "Cursa",
+                longitude_J2000: 74.48,
+                effect: "El pozo dorado",
+                filePath: "https://www.izarren.top/cursa",
+                magnitude: 6
+            },
+            {
+                name: "Betelgeuse",
+                longitude_J2000: 88.17,
+                effect: "Elevación social",
+                filePath: "https://www.izarren.top/betelgeuse",
+                magnitude: 6
+            },
+            {
+                name: "Bellatrix",
+                longitude_J2000: 89.29,
+                effect: "Estrella amazona",
+                filePath: "https://www.izarren.top/bellatrix",
+                magnitude: 6
+            },
+            {
+                name: "Acubens",
+                longitude_J2000: 133.11,
+                effect: "El refugio del escondite",
+                filePath: "https://www.izarren.top/acubens",
+                magnitude: 6
+            },
+            {
+                name: "Adhafera",
+                longitude_J2000: 147.06,
+                effect: "La pira funeraria",
+                filePath: "https://www.izarren.top/adhafera",
+                magnitude: 6
+            },
+            {
+                name: "Acrab",
+                longitude_J2000: 242.43,
+                effect: "Malevolencia extrema",
+                filePath: "https://www.izarren.top/acrab",
+                magnitude: 6
+            },
+            {
+                name: "Al Haud",
+                longitude_J2000: 126.48,
+                effect: "Persecución de la sabiduría",
+                filePath: "https://www.izarren.top/al-haud",
+                magnitude: 6
+            },
+            {
+                name: "Al Hecka",
+                longitude_J2000: 84.19,
+                effect: "El cuerno sur del toro",
+                filePath: "https://www.izarren.top/al-hecka",
+                magnitude: 6
+            },
+            {
+                name: "Anser",
+                longitude_J2000: 299.22,
+                effect: "Profetiza",
+                filePath: "https://www.izarren.top/anser",
+                magnitude: 6
+            },
+            {
+                name: "Ascella",
+                longitude_J2000: 283.10,
+                effect: "Da buena fortuna y felicidad",
+                filePath: "https://www.izarren.top/ascella",
+                magnitude: 6
+            },
+            {
+                name: "Dabih",
+                longitude_J2000: 303.34,
+                effect: "Propagación del conocimiento",
+                filePath: "https://www.izarren.top/dabih",
+                magnitude: 6
+            },
+            {
+                name: "El kophrah",
+                longitude_J2000: 153.12,
+                effect: "El salto de la gacela",
+                filePath: "https://www.izarren.top/el-kophrah",
+                magnitude: 6
+            },
+            {
+                name: "Kochab",
+                longitude_J2000: 132.51,
+                effect: "El emperador",
+                filePath: "https://www.izarren.top/kochab",
+                magnitude: 6
+            },
+            {
+                name: "Kraz",
+                longitude_J2000: 196.54,
+                effect: "El emperador",
+                filePath: "https://www.izarren.top/kraz",
+                magnitude: 6
+            },
+            {
+                name: "Menkar",
+                longitude_J2000: 44.37,
+                effect: "Elevación social",
+                filePath: "https://www.izarren.top/menkar",
+                magnitude: 6
+            },
+            {
+                name: "Mirach",
+                longitude_J2000: 29.56,
+                effect: "El lado de la mujer encadenada",
+                filePath: "https://www.izarren.top/mirach",
+                magnitude: 6
+            },
+            {
+                name: "Miram",
+                longitude_J2000: 58.14,
+                effect: "Veneno mortal",
+                filePath: "https://www.izarren.top/miram",
+                magnitude: 6
+            },
+            {
+                name: "Misam",
+                longitude_J2000: 57.13,
+                effect: "Cura y resucita",
+                filePath: "https://www.izarren.top/misam",
+                magnitude: 6
+            },
+            {
+                name: "Muscida",
+                longitude_J2000: 113.18,
+                effect: "Don de lenguas",
+                filePath: "https://www.izarren.top/muscida",
+                magnitude: 6
+            },
+            {
+                name: "Scheat",
+                longitude_J2000: 358.54,
+                effect: "Peligro por ahogamiento o sofocación",
+                filePath: "https://www.izarren.top/scheat",
+                magnitude: 6
+            },
+            {
+                name: "Schedar",
+                longitude_J2000: 37.19,
+                effect: "El collar de Armonía",
+                filePath: "https://www.izarren.top/schedar",
+                magnitude: 6
+            },
+            {
+                name: "Seginus",
+                longitude_J2000: 197.12,
+                effect: "Facilidad para astrología, leyes",
+                filePath: "https://www.izarren.top/seginus",
+                magnitude: 6
+            },
+            {
+                name: "Vindemiatrix",
+                longitude_J2000: 189.29,
+                effect: "Hierba alucinogena",
+                filePath: "https://www.izarren.top/vindemiatrix",
+                magnitude: 6
+            },
+            {
+                name: "Zavijava",
+                longitude_J2000: 176.42,
+                effect: "Buen vendedor, ejecutivo, gerente o comandante subordinado",
+                filePath: "https://www.izarren.top/zavijava",
+                magnitude: 6
+            },
+            {
+                name: "Zibal",
+                longitude_J2000: 43.21,
+                effect: "Nido de avestruz",
+                filePath: "https://www.izarren.top/zibal",
+                magnitude: 6
+            },
+            {
+                name: "Zosma",
+                longitude_J2000: 160.51,
+                effect: "Gran inteligencia",
+                filePath: "https://www.izarren.top/zosma",
+                magnitude: 6
+            },
+            {
+                name: "Tolimán",
+                longitude_J2000: 239.04,
+                effect: "Posición de honor y poder",
+                filePath: "https://www.izarren.top/rigel-centauro",
+                magnitude: 6
+            },
+            {
+                name: "Tarazed",
+                longitude_J2000: 300.28,
+                effect: "Fortaleza y resistencia",
+                filePath: "https://www.izarren.top/tarazed",
+                magnitude: 6
+            },
+            {
+                name: "Alterf",
+                longitude_J2000: 137.25,
+                effect: "La mirada",
+                filePath: "https://www.izarren.top/alterf",
+                magnitude: 6
+            },
+            {
+                name: "Deneb Adige",
+                longitude_J2000: 334.51,
+                effect: "Habilidades artísticas y misticismo",
+                filePath: "https://www.izarren.top/deneb-adige",
+                magnitude: 6
+            },
+			{
+				name: "Psi Osa Mayor",
+				longitude_J2000: 167.21,
+				effect: "Inspiración y guía espiritual",
+				filePath: "https://www.izarren.top/psi-osa-mayor",
+				magnitude: 6
+			},
+			{
+				name: "Etamin",
+				longitude_J2000: 271.45,
+				effect: "Sabiduría y protección",
+				filePath: "https://www.izarren.top/etamin",
+				magnitude: 6
+			},
+			{
+				name: "Alderamin",
+				longitude_J2000: 308.37,
+				effect: "Liderazgo y autoridad",
+				filePath: "https://www.izarren.top/alderamin",
+				magnitude: 6
+			},
+			{
+				name: "Alpheratz",
+				longitude_J2000: 14.11,
+				effect: "Independencia y libertad",
+				filePath: "https://www.izarren.top/alpheratz",
+				magnitude: 6
+			},
+			{
+				name: "Algenib",
+				longitude_J2000: 9.45,
+				effect: "Ambición y determinación",
+				filePath: "https://www.izarren.top/algenib",
+				magnitude: 6
+			},
+			{
+				name: "Hamal",
+				longitude_J2000: 33.10,
+				effect: "Independencia y liderazgo",
+				filePath: "https://www.izarren.top/hamal",
+				magnitude: 6
+			},
+			{
+				name: "Mintaka",
+				longitude_J2000: 84.05,
+				effect: "Éxito y protección",
+				filePath: "https://www.izarren.top/mintaka",
+				magnitude: 6
+			},
+			{
+				name: "Alnilam",
+				longitude_J2000: 85.11,
+				effect: "Fortuna súbita",
+				filePath: "https://www.izarren.top/alnilam",
+				magnitude: 6
+			},
+			{
+				name: "Alnitak",
+				longitude_J2000: 86.18,
+				effect: "Protección y honor",
+				filePath: "https://www.izarren.top/alnitak",
+				magnitude: 6
+			},
+			{
+				name: "Castor",
+				longitude_J2000: 113.17,
+				effect: "Inteligencia y escritura",
+				filePath: "https://www.izarren.top/castor",
+				magnitude: 6
+			},
+			{
+				name: "Merak",
+				longitude_J2000: 153.11,
+				effect: "Peligro de violencia",
+				filePath: "https://www.izarren.top/merak",
+				magnitude: 6
+			},
+			{
+				name: "Alioth",
+				longitude_J2000: 166.44,
+				effect: "Persistencia y tenacidad",
+				filePath: "https://www.izarren.top/alioth",
+				magnitude: 6
+			},
+			{
+				name: "Phecda",
+				longitude_J2000: 157.32,
+				effect: "Guardián y protector",
+				filePath: "https://www.izarren.top/phecda",
+				magnitude: 6
+			},
+			{
+				name: "Alkes",
+				longitude_J2000: 127.25,
+				effect: "Sabiduría espiritual",
+				filePath: "https://www.izarren.top/alkes",
+				magnitude: 6
+			},	
+			{
+				name: "Diadem",
+				longitude_J2000: 203.17,
+				effect: "Dignidad y honor",
+				filePath: "https://www.izarren.top/diadem",
+				magnitude: 6
+			},
+			{
+				name: "Menkent",
+				longitude_J2000: 231.11,
+				effect: "Logros intelectuales",
+				filePath: "https://www.izarren.top/menkent",
+				magnitude: 6
+			},
+			{
+				name: "Suhail",
+				longitude_J2000: 223.22,
+				effect: "Viajes y expansión",
+				filePath: "https://www.izarren.top/suhail",
+				magnitude: 6
+			},
+			{
+				name: "Miaplacidus",
+				longitude_J2000: 221.39,
+				effect: "Éxito en navegación",
+				filePath: "https://www.izarren.top/miaplacidus",
+				magnitude: 6
+			},
+			{
+				name: "Al Risha",
+				longitude_J2000: 28.38,
+				effect: "Unión espiritual",
+				filePath: "https://www.izarren.top/al-risha",
+				magnitude: 6
+			},
+			{
+				name: "Alcor",
+				longitude_J2000: 169.21,
+				effect: "Pruebas de lealtad",
+				filePath: "https://www.izarren.top/alcor",
+				magnitude: 6
+			},
+			{
+				name: "Zuben Elgenubi",
+				longitude_J2000: 224.43,
+				effect: "Beneficios por servicio",
+				filePath: "https://www.izarren.top/zuben-elgenubi",
+				magnitude: 6
+			},
+			{
+				name: "Zuben Elschemali",
+				longitude_J2000: 235.27,
+				effect: "Beneficios por justicia",
+				filePath: "https://www.izarren.top/zubenelschemali",
+				magnitude: 6
+			},
+			{
+				name: "Acumen",
+				longitude_J2000: 248.49,
+				effect: "Ataques y defensas",
+				filePath: "https://www.izarren.top/acumen",
+				magnitude: 6
+			},
+			{
+				name: "Aculeus",
+				longitude_J2000: 247.11,
+				effect: "Ataque y defensa",
+				filePath: "https://www.izarren.top/aculeus",
+				magnitude: 6
+			},
+			{
+				name: "Algorab",
+				longitude_J2000: 176.51,
+				effect: "Destructivo y maligno",
+				filePath: "https://www.izarren.top/algorab",
+				magnitude: 6
+			},
+			{
+				name: "Menkalinan",
+				longitude_J2000: 89.41,
+				effect: "Buena fortuna",
+				filePath: "https://www.izarren.top/menkalinan",
+				magnitude: 6
+			},
+			{
+				name: "Alfard",
+				longitude_J2000: 131.44,
+				effect: "Cualidades de liderazgo",
+				filePath: "https://www.izarren.top/alfard",
+				magnitude: 6
+			},
+			{
+				name: "Algieba",
+				longitude_J2000: 149.49,
+				effect: "Riqueza y generosidad",
+				filePath: "https://www.izarren.top/algieba",
+				magnitude: 6
+			},
+			{
+				name: "Meissa",
+				longitude_J2000: 83.21,
+				effect: "Protección divina",
+				filePath: "https://www.izarren.top/meissa",
+				magnitude: 6
+			},
+			{
+				name: "Saiph",
+				longitude_J2000: 96.19,
+				effect: "Comando y liderazgo",
+				filePath: "https://www.izarren.top/saiph",
+				magnitude: 6
+			},
+			{
+				name: "Phact",
+				longitude_J2000: 104.41,
+				effect: "Logros duraderos",
+				filePath: "https://www.izarren.top/phact",
+				magnitude: 6
+			},
+			{
+				name: "Wezen",
+				longitude_J2000: 107.11,
+				effect: "Protección en viajes",
+				filePath: "https://www.izarren.top/wezen",
+				magnitude: 6
+			},
+			{
+				name: "Aludra",
+				longitude_J2000: 112.22,
+				effect: "Buen juicio",
+				filePath: "https://www.izarren.top/aludra",
+				magnitude: 6
+			},
+			{
+				name: "Alula Australis",
+				longitude_J2000: 169.21,
+				effect: "Habilidades curativas",
+				filePath: "https://www.izarren.top/alula-australis",
+				magnitude: 6
+			},
+			{
+				name: "Alula Borealis",
+				longitude_J2000: 168.52,
+				effect: "Liderazgo espiritual",
+				filePath: "https://www.izarren.top/alula-borealis",
+				magnitude: 6
+			},
+			{
+				name: "Tania Australis",
+				longitude_J2000: 167.43,
+				effect: "Persistencia",
+				filePath: "https://www.izarren.top/tania-australis",
+				magnitude: 6
+			},
+			{
+				name: "Tania Borealis",
+				longitude_J2000: 166.12,
+				effect: "Determinación",
+				filePath: "https://www.izarren.top/tania-borealis",
+				magnitude: 6
+			},
+			{
+				name: "Talitha",
+				longitude_J2000: 138.21,
+				effect: "Protección familiar",
+				filePath: "https://www.izarren.top/talitha",
+				magnitude: 6
+			},
+			{
+				name: "Nashira",
+				longitude_J2000: 299.41,
+				effect: "Peligros superados",
+				filePath: "https://www.izarren.top/nashira",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Australis",
+				longitude_J2000: 275.52,
+				effect: "Éxito en objetivos",
+				filePath: "https://www.izarren.top/kaus-austral",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Media",
+				longitude_J2000: 274.21,
+				effect: "Intuición espiritual",
+				filePath: "https://www.izarren.top/kaus-media",
+				magnitude: 6
+			},
+			{
+				name: "Kaus Borealis",
+				longitude_J2000: 272.41,
+				effect: "Logros materiales",
+				filePath: "https://www.izarren.top/kaus-boreal",
+				magnitude: 6
+			},
+			{
+				name: "Lesath",
+				longitude_J2000: 264.11,
+				effect: "Peligro y advertencia",
+				filePath: "https://www.izarren.top/lesath",
+				magnitude: 6
+			},
+			{
+				name: "Larawag",
+				longitude_J2000: 251.49,
+				effect: "Peligro de venenos",
+				filePath: "https://www.izarren.top/larawag",
+				magnitude: 6
+			},
+			{
+				name: "Ras Alhague",
+				longitude_J2000: 263.17,
+				effect: "Curación y medicina",
+				filePath: "https://www.izarren.top/rasalhague",
+				magnitude: 6
+			},
+			{
+				name: "Graffias",
+				longitude_J2000: 242.43,
+				effect: "Peligro y malevolencia",
+				filePath: "https://www.izarren.top/grafias",
+				magnitude: 6
+			},
+			{
+				name: "Dschubba",
+				longitude_J2000: 240.47,
+				effect: "Peligro y destrucción",
+				filePath: "https://www.izarren.top/dschubba",
+				magnitude: 6
+			},
+			{
+				name: "Wasat",
+				longitude_J2000: 106.17,
+				effect: "Violencia, malevolencia",
+				filePath: "https://www.izarren.top/wasat",
+				magnitude: 6
+			},
+			{
+				name: "Mirzam",
+				longitude_J2000: 91.21,
+				effect: "Fama y honores inesperados",
+				filePath: "https://www.izarren.top/mirzam",
+				magnitude: 6
+			},
+			{
+				name: "Revati",
+				longitude_J2000: 355.43,
+				effect: "Riqueza y prosperidad, beneficios a través de viajes",
+				filePath: "https://www.izarren.top/revati",
+				magnitude: 6
+			},
+			{
+				name: "Heze",
+				longitude_J2000: 191.15,
+				effect: "Habilidades artísticas y apreciación por la belleza",
+				filePath: "https://www.izarren.top/heze",
+				magnitude: 6
+			},
+			{
+				name: "Arneb",
+				longitude_J2000: 87.32,
+				effect: "Intuición y perseverancia",
+				filePath: "https://www.izarren.top/arneb",
+				magnitude: 6
+			},
+			{
+				name: "Ashlesha",
+				longitude_J2000: 124.20,
+				effect: "Intuición profunda, poder hipnótico y habilidades curativas",
+				filePath: "https://www.izarren.top/ashlesha",
+				magnitude: 6
+			},
+			{
+				name: "Unukalhai",
+				longitude_J2000: 241.54,
+				effect: "Sabiduría oculta y medicina",
+				filePath: "https://www.izarren.top/unukalhai",
+				magnitude: 6
+			}						
     ];
 
 function calculatePrecession(date) {
