@@ -585,8 +585,9 @@
         
         // Función para obtener el color del planeta según su posición
         function getPlanetColor(planet, longitude) {
-            if (planet === 'ASC' || planet === 'MC' || planet === 'DSC' || planet === 'IC') return '#000000';
-            
+            if (planet === 'ASC' || planet === 'MC' || planet === 'DSC' || planet === 'IC' ||
+                planet === 'PARTE_FORTUNA' || planet === 'PARTE_ESPIRITU') return '#000000';
+    
             if (planet === 'JÚPITER') {
                 if ((longitude >= 306.00 && longitude <= 360.00) || (longitude >= 0.00 && longitude <= 150.00)) 
                     return COLORS.BLUE;
@@ -613,7 +614,7 @@
                 switch(planet) {
                     case 'SOL': case 'MARTE': case 'PLUTÓN': return COLORS.RED;
                     case 'VENUS': return COLORS.GREEN;
-                    case 'MERCURIO': case 'SATURNO': case 'URANO': return COLORS.YELLOW;
+                    case 'MERCURIO': case 'URANO': return COLORS.YELLOW;
                     case 'LUNA': case 'NEPTUNO': return COLORS.BLUE;
                     default: return '#000000';
                 }
@@ -1716,16 +1717,16 @@
         // Función para dibujar los planetas con colores según posición
         function drawPlanets(planets, isNatal) {
             const radius = isNatal ? DIMENSIONS.innerRadius : DIMENSIONS.middleRadius;
-            
+    
             planets.forEach((planet, index) => {
                 // Calcular posición en el círculo
                 const angle = (planet.longitude - 90) * Math.PI / 180;
                 const x = DIMENSIONS.centerX + radius * Math.cos(angle);
                 const y = DIMENSIONS.centerY + radius * Math.sin(angle);
-                
+        
                 // Obtener color del planeta basado en su posición
                 const planetColor = getPlanetColor(planet.name, planet.longitude);
-                
+        
                 // Crear círculo para el planeta
                 const circle = createSvgElement('circle', {
                     cx: x,
@@ -1738,22 +1739,22 @@
                     'data-is-natal': isNatal,
                     'class': 'planet-symbol'
                 });
-                
+        
                 // Añadir eventos al círculo
                 circle.addEventListener('click', () => {
                     selectPlanet(planet, isNatal);
                 });
-                
+        
                 circle.addEventListener('mouseover', (e) => {
                     showTooltip(e, `${planet.name} en ${planet.sign} (${planet.longitude.toFixed(1)}°)`);
                 });
-                
+        
                 circle.addEventListener('mouseout', () => {
                     hideTooltip();
                 });
-                
+        
                 chartSvg.appendChild(circle);
-                
+        
                 // Añadir texto con símbolo (con el color correspondiente)
                 const text = createSvgElement('text', {
                     x: x,
