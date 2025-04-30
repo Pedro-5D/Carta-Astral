@@ -1715,60 +1715,115 @@
         }
 
         // Función para dibujar los planetas con colores según posición
-        function drawPlanets(planets, isNatal) {
-            const radius = isNatal ? DIMENSIONS.innerRadius : DIMENSIONS.middleRadius;
+        // Función para determinar si un color es claro u oscuro
+function isLightColor(color) {
+    // Si es un color en formato hexadecimal como "#RRGGBB"
+    if (typeof color === 'string' && color.startsWith('#')) {
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        
+        // Fórmula para calcular la luminosidad percibida
+        // basada en recomendaciones de WCAG: https://www.w3.org/TR/WCAG20/
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        
+        // Si la luminosidad es mayor a 0.5, consideramos el color como claro
+        return luminance > 0.5;
+    }
     
-            planets.forEach((planet, index) => {
-                // Calcular posición en el círculo
-                const angle = (planet.longitude - 90) * Math.PI / 180;
-                const x = DIMENSIONS.centerX + radius * Math.cos(angle);
-                const y = DIMENSIONS.centerY + radius * Math.sin(angle);
+    // Para los colores predefinidos en COLORS
+    if (color === COLORS.YELLOW || color === COLORS.GREEN) {
+        return true; // Amarillo y verde son colores claros
+    }
+    
+    return false; // Por defecto, consideramos el color como oscuro
+}
+
+// Función drawPlanets mejorada para garantizar contraste con los glifos
+function drawPlanets(planets, isNatal) {
+    const radius = isNatal ? DIMENSIONS.innerRadius : DIMENSIONS.middleRadius;
+    
+    planets.forEach((planet, index) => {
+        // Calcular posición en el círculo
+        const angle = (planet.longitude - 90) * Math.PI / 180;
+        const x = DIMENSIONS.centerX + radius * Math.cos(angle);
+        const y = DIMENSIONS.centerY + radius * Math.sin(angle);
         
-                // Obtener color del planeta basado en su posición
-                const planetColor = getPlanetColor(planet.name, planet.longitude);
+        // Obtener color del planeta basado en su posición
+        const planetColor = getPlanetColor(planet.name, planet.longitude);
         
-                // Crear círculo para el planeta
-                const circle = createSvgElement('circle', {
-                    cx: x,
-                    cy: y,
-                    r: 12,
-                    fill: isNatal ? 'white' : '#e0e0e0',
-                    stroke: selectedPlanet === planet ? COLORS.BLUE : planetColor, // Usar el color basado en posición
-                    'stroke-width': selectedPlanet === planet ? 3 : 1,
-                    'data-planet-index': index,
-                    'data-is-natal': isNatal,
-                    'class': 'planet-symbol'
-                });
+        // Determinar si el color de fondo es claro u oscuro
+        const isLight = isLightColor(planetColor);
         
-                // Añadir eventos al círculo
-                circle.addEventListener('click', () => {
-                    selectPlanet(planet, isNatal);
-                });
+        // Elegir color de texto con buen contraste 
+        const textColor = isLight ? '#000000' : '#FFFFFF';
         
-                circle.addEventListener('mouseover', (e) => {
-                    showTooltip(e, `${planet.name} en ${planet.sign} (${planet.longitude.toFixed(1)}°)`);
-                });
+        // Crear círculo para el planeta con colores más saturados
+        const circle = createSvgElement('circle', {
+            cx: x,
+            cy: y,
+            r: 13, // Ligeramente más grande
+            fill: planetColor,
+            stroke: selectedPlanet === planet ? COLORS.BLUE : '#000000',
+            'stroke-width': selectedPlanet === planet ? 3 : 1.5, // Borde un poco más grueso
+            'data-planet-index': index,
+            'data-is-natal': isNatal,
+            'class': 'planet-symbol'
+        });
         
-                circle.addEventListener('mouseout', () => {
-                    hideTooltip();
-                });
+        // Añadir eventos al círculo
+        circle.addEventListener('click', () => {
+            selectPlanet(planet, isNatal);
+        });
         
-                chartSvg.appendChild(circle);
+        circle.addEventListener('mouseover', (e) => {
+            showTooltip(e, `${planet.name} en ${planet.sign} (${planet.longitude.toFixed(1)}°)`);
+        });
         
-                // Añadir texto con símbolo (con el color correspondiente)
-                const text = createSvgElement('text', {
-                    x: x,
-                    y: y,
-                    'text-anchor': 'middle',
-                    'alignment-baseline': 'middle',
-                    'font-size': 14,
-                    'fill': planetColor, // Aplicar color al texto también
-                    'pointer-events': 'none'
-                });
-                text.textContent = PLANET_SYMBOLS[planet.name] || planet.name;
-                chartSvg.appendChild(text);
+        circle.addEventListener('mouseout', () => {
+            hideTooltip();
+        });
+        
+        chartSvg.appendChild(circle);
+        
+        // Añadir texto con símbolo con color adaptativo para contraste
+        const text = createSvgElement('text', {
+            x: x,
+            y: y,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'middle',
+            'font-size': 14,
+            'fill': textColor, // Color adaptativo según el fondo
+            'font-weight': 'bold',
+            'pointer-events': 'none',
+            'stroke': textColor,  // Contorno del mismo color
+            'stroke-width': 0.3,  // Contorno fino para mejor definición
+        });
+        text.textContent = PLANET_SYMBOLS[planet.name] || planet.name;
+        chartSvg.appendChild(text);
+        
+        // Opcional: Añadir un ligero halo alrededor del texto para mejorar la legibilidad
+        if (isLight) {
+            // Solo para colores claros, añadir un halo sutil
+            const halo = createSvgElement('text', {
+                x: x,
+                y: y,
+                'text-anchor': 'middle',
+                'alignment-baseline': 'middle',
+                'font-size': 14,
+                'fill': 'none',
+                'stroke': textColor, 
+                'stroke-width': 0.5,
+                'stroke-opacity': 0.5,
+                'pointer-events': 'none',
             });
+            halo.textContent = PLANET_SYMBOLS[planet.name] || planet.name;
+            chartSvg.appendChild(halo);
+            // Colocar el texto original encima del halo
+            chartSvg.appendChild(text);
         }
+    });
+}
 
         // Función para crear un elemento SVG
         function createSvgElement(type, attributes = {}) {
